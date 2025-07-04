@@ -1,0 +1,12 @@
+export const homePath = () => "/";
+export const dashboardPath = () => "/dashboard";
+export const projectsPath = () => "/projects";
+export const tasksPath = () => "/tasks";
+export const calendarPath = () => "/calendar";
+export const teamsPath = () => "/teams";
+export const teamPath = () => "/team";
+export const reportsPath = () => "/reports";
+export const profilePath = () => "/profile";
+export const settingsPath = () => "/settings";
+export const signUpPath = () => "/auth/sign-up";
+export const signInPath = () => "/auth/sign-in";
