@@ -9,7 +9,7 @@ export const useSignIn = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { mutate: signUp, isPending: signUpLoading } = useMutation({
+  const { mutate: signIn, isPending: signInLoading } = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       signInUser({ email: data.email, password: data.password }),
     onSuccess: (data) => {
@@ -22,5 +22,5 @@ export const useSignIn = () => {
     },
   });
 
-  return { signUp, signUpLoading };
+  return { signIn, signInLoading };
 };

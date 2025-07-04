@@ -1,1 +1,3 @@
-export const SignUpPage = () => <h1>Sign up page</h1>;
+import { SignUpForm } from "@/features/auth/components/sign-up-form";
+
+export const SignUpPage = () => <SignUpForm />;

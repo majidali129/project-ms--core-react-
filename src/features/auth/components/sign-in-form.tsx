@@ -10,15 +10,15 @@ import { Apple, Chrome, Github, Loader, Twitter } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { homePath, signUpPath } from "@/paths";
 import { useState, type FormEvent } from "react";
-import { useSignUp } from "../hooks/use-sign-up";
 import { FormItem } from "@/components/form/form-item";
+import { useSignIn } from "../hooks/use-sign-in";
 
 export const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const { signIn, signInLoading } = useSignUp();
+  const { signIn, signInLoading } = useSignIn();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
