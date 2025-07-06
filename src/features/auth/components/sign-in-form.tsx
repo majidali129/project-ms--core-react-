@@ -66,7 +66,7 @@ export const SignInForm = () => {
           {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <FormItem
-              onChange={(mail) => setEmail(mail)}
+              onChange={(e) => setEmail(e.target.value)}
               value={email}
               name="email"
               label="Email"
@@ -75,7 +75,7 @@ export const SignInForm = () => {
             />
             <FormItem
               value={password}
-              onChange={(password) => setPassword(password)}
+              onChange={(e) => setPassword(e.target.value)}
               name="password"
               label="Password"
               placeholder="Enter your password"

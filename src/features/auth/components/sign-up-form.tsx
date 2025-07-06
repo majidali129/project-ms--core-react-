@@ -49,7 +49,7 @@ export const SignUpForm = () => {
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-5">
             <FormItem
-              onChange={(mail) => setEmail(mail)}
+              onChange={(e) => setEmail(e.target.value)}
               value={email}
               name="email"
               label="Email"
@@ -58,7 +58,7 @@ export const SignUpForm = () => {
             />
             <FormItem
               value={password}
-              onChange={(password) => setPassword(password)}
+              onChange={(e) => setPassword(e.target.value)}
               name="password"
               label="Password"
               placeholder="Enter your password"
@@ -67,7 +67,7 @@ export const SignUpForm = () => {
             <div>
               <FormItem
                 value={confirmPassword}
-                onChange={(cPassword) => setConfirmPassword(cPassword)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 name="confirmPassword"
                 label="Confirm Password"
                 placeholder="Confirm your password"
