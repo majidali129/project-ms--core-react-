@@ -1,0 +1,46 @@
+import {
+  cloneElement,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+type ReusableDialogProps = {
+  title?: string;
+  description?: string;
+  trigger: ReactNode;
+  children: ReactElement<{ onClose?: () => void }>;
+};
+
+export const ReusableDialog = ({
+  title,
+  description,
+  children,
+  trigger,
+}: ReusableDialogProps) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <form>
+        {trigger}
+
+        <DialogContent className="sm:max-w-[30rem] p-0 border-none">
+          {title && description && (
+            <DialogHeader>
+              <DialogTitle>{title}</DialogTitle>
+              <DialogDescription>{description}</DialogDescription>
+            </DialogHeader>
+          )}
+          {cloneElement(children, { onClose: () => setOpen(false) })}
+        </DialogContent>
+      </form>
+    </Dialog>
+  );
+};

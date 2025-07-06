@@ -1,20 +1,27 @@
+import type { ChangeEvent, KeyboardEvent } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 
 type FormItemProps = {
+  onKeyPress?: (
+    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   name: string;
   type?: string;
+  required?: boolean;
   placeholder?: string;
   label: string;
-  onChange: (value: string) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   value: string;
   textarea?: boolean;
 };
 
 export const FormItem = ({
+  onKeyPress,
   name,
   type = "text",
+  required = true,
   placeholder,
   label,
   onChange,
@@ -28,22 +35,24 @@ export const FormItem = ({
         <Textarea
           placeholder={placeholder}
           name={name}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(e)}
           value={value}
           autoComplete="off"
           id={name}
           required
+          rows={5}
         />
       ) : (
         <Input
-          required
-          onChange={(e) => onChange(e.target.value)}
+          required={required}
+          onChange={(e) => onChange(e)}
           value={value}
           autoComplete="off"
           name={name}
           id={name}
           type={type}
           placeholder={placeholder}
+          onKeyUp={onKeyPress}
         />
       )}
     </div>

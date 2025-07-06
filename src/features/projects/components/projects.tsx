@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Filter, Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ProjectsList } from "./projects-list";
+import { ReusableDialog } from "@/components/re-usable-dialog";
+import { CreateProjectForm } from "./create-project-form";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 export const Projects = () => {
   return (
-    <section className="space-y-10">
+    <section className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -14,24 +16,20 @@ export const Projects = () => {
             Manage and track all your projects
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          New Project
-        </Button>
-      </div>
-      {/* Search and Filter */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input placeholder="Search projects..." className="pl-10" />
-        </div>
-        <Button variant="outline" className="gap-2">
-          <Filter className="h-4 w-4" />
-          Filter
-        </Button>
-      </div>
 
-      {/* Projects List Via Tabas */}
+        <ReusableDialog
+          trigger={
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                New Project
+              </Button>
+            </DialogTrigger>
+          }
+        >
+          <CreateProjectForm />
+        </ReusableDialog>
+      </div>
       <ProjectsList />
     </section>
   );
