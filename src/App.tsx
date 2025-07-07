@@ -3,7 +3,6 @@ import {
   calendarPath,
   dashboardPath,
   profilePath,
-  projectDetailsPath,
   projectsPath,
   reportsPath,
   settingsPath,
@@ -35,10 +34,7 @@ const App = () => {
         <Route index element={<Navigate replace to={dashboardPath()} />} />
         <Route path={dashboardPath()} element={<DashboardPage />} />
         <Route path={projectsPath()} element={<ProjectsPage />} />
-        <Route
-          path={projectDetailsPath("proj-001")}
-          element={<ProjectDetailsPage />}
-        />
+        <Route path="projects/:projectId" element={<ProjectDetailsPage />} />
         <Route path={tasksPath()} element={<TasksPage />} />
         <Route path={calendarPath()} element={<CalendarPage />} />
         <Route path={teamPath()} element={<TeamPage />} />

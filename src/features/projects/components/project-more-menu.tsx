@@ -5,15 +5,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAppDispatch } from "@/store/hooks";
 import type { Project } from "@/types";
 import { MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router";
+import { deleteProject } from "../project-slice";
 
 type ProjectMoreMenuProps = {
   project: Project;
 };
 
 export const ProjectMoreMenu = ({ project }: ProjectMoreMenuProps) => {
-  console.log(project);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -21,9 +25,23 @@ export const ProjectMoreMenu = ({ project }: ProjectMoreMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[180px]">
         <DropdownMenuGroup>
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`${project.id}`);
+            }}
+          >
+            View Details
+          </DropdownMenuItem>
           <DropdownMenuItem>Update</DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(deleteProject({ id: project.id as string }));
+            }}
+          >
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -26,8 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { projects } from "@/data/projects";
 import { teams } from "@/data/teams";
+import { useAppSelector } from "@/store/hooks";
 import { projectStatusColor, teamDomainColors } from "@/utils/constants";
 import { statusIcons } from "@/utils/constants";
 import { formatCurrency } from "@/utils/helpers";
@@ -45,12 +45,15 @@ import {
   Calendar,
   DollarSign,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 type Role = "project-manager" | "admin" | "user";
 const ProjectDetails = () => {
   const [openTeamAllocateDialog, setOpenTeamAllocateDialog] = useState(false);
-  const [project, setProject] = useState(projects[0]);
+  const { projectId } = useParams<{ projectId: string }>();
+  const projects = useAppSelector((state) => state.projects.projects);
+  const project = projects.find((project) => project.id === projectId)!;
   const [domainFilter, setDomainFilter] = useState("all");
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [role] = useState<Role>("project-manager");
@@ -74,18 +77,22 @@ const ProjectDetails = () => {
 
   const handleTeamAllocation = () => {
     const newTeams = teams.filter((team) => selectedTeams.includes(team.id));
-    setProject((prev) => ({ ...prev, teams: [...newTeams, ...prev.teams] }));
+    // setProject((prev) => ({ ...prev, teams: [...newTeams, ...prev.teams] }));
     setOpenTeamAllocateDialog(false);
     setSelectedTeams([]);
     setDomainFilter("all");
   };
 
   const handleRemoveAllocatedTeam = (teamId: string) => {
-    setProject((prev) => ({
-      ...prev,
-      teams: prev.teams.filter((team) => team.id !== teamId),
-    }));
+    // setProject((prev) => ({
+    //   ...prev,
+    //   teams: prev.teams.filter((team) => team.id !== teamId),
+    // }));
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <section className="space-y-6">
@@ -277,7 +284,8 @@ const ProjectDetails = () => {
           <CardContent>
             <div className="text-2xl font-bold">
               {Math.ceil(
-                (project.endDate.getTime() - project.startDate.getTime()) /
+                (new Date(project.endDate).getTime() -
+                  new Date(project.startDate).getTime()) /
                   (1000 * 60 * 60 * 24)
               )}{" "}
               days

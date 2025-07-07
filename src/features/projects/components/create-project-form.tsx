@@ -40,8 +40,8 @@ const initialState: Pick<
   budget: 0,
   spent: 0,
   createdBy: teams[0].members[0].userName,
-  startDate: new Date(),
-  endDate: new Date(),
+  startDate: new Date().toISOString(),
+  endDate: new Date().toISOString(),
   teams: [],
   tags: [],
 };
@@ -170,14 +170,20 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
               label="Start Date"
               defaultValue={format(formData.startDate, "d MM yyyy")}
               onDateChange={(date) =>
-                setFormData((prev) => ({ ...prev, startDate: date }))
+                setFormData((prev) => ({
+                  ...prev,
+                  startDate: date.toISOString(),
+                }))
               }
             />
             <DatePicker
               defaultValue={format(formData.endDate, "d MM yyyy")}
               label="End Date"
               onDateChange={(date) =>
-                setFormData((prev) => ({ ...prev, endDate: date }))
+                setFormData((prev) => ({
+                  ...prev,
+                  endDate: date.toISOString(),
+                }))
               }
             />
           </div>

@@ -1,5 +1,5 @@
-export type Priority = "high" | "medium" | "low" | "urgent";
 export type TaskStatus = "todo" | "progress" | "review" | "done" | "overdue";
+export type Priority = "high" | "medium" | "low" | "urgent";
 export type ProjectStatus =
   | "planning"
   | "active"
@@ -14,8 +14,8 @@ export type Team = {
   description: string;
   domain: string;
   members: { userName: string; id: string }[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Project = {
@@ -27,12 +27,12 @@ export type Project = {
   budget: number;
   spent: number;
   createdBy: string; // PROJECT-MANAGER | ADMIN
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   teams: Team[];
   tags?: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Task = {
@@ -44,9 +44,9 @@ export type Task = {
   priority: Priority;
   status: TaskStatus;
   assignee: string | null;
-  dueDate: Date | null;
+  dueDate: string | null;
   estimatedTime: string;
   tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
