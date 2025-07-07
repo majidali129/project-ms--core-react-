@@ -1,6 +1,7 @@
 export const homePath = () => "/";
 export const dashboardPath = () => "/dashboard";
 export const projectsPath = () => "/projects";
+export const projectDetailsPath = (id: string) => `/projects/${id}`;
 export const tasksPath = () => "/tasks";
 export const calendarPath = () => "/calendar";
 export const teamsPath = () => "/teams";

@@ -6,22 +6,19 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { MoreHorizontal, Target } from "lucide-react";
-import { getProjectStatusColor } from "@/utils/constans/colors";
+
+import { projectStatusColor } from "@/utils/constants";
 import type { Project } from "@/types/index";
+import { ProjectMoreMenu } from "./project-more-menu";
+import { statusIcons } from "@/utils/constants";
+import { Target } from "lucide-react";
 
 type ProjectItemProps = {
   project: Project;
 };
 
 export const ProjectItem = ({ project }: ProjectItemProps) => {
-  // const formatCurrency = (amount: number) => {
-  //   return new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //     minimumFractionDigits: 0,
-  //   }).format(amount);
-  // };
+  const StatusIcon = statusIcons[project.status];
 
   return (
     <Card
@@ -37,7 +34,7 @@ export const ProjectItem = ({ project }: ProjectItemProps) => {
             {project.name}
           </h5>
           {/* <TaskMoreMenu task={task} /> */}
-          <MoreHorizontal className="size-5" />
+          <ProjectMoreMenu project={project} />
         </div>
       </CardHeader>
       <CardContent>
@@ -45,8 +42,8 @@ export const ProjectItem = ({ project }: ProjectItemProps) => {
           <div className="flex items-center gap-3">
             <Badge variant="outline">{/* {} */} web-dev</Badge>
 
-            <Badge className={getProjectStatusColor[project.status]}>
-              {project.status}
+            <Badge className={projectStatusColor[project.status]}>
+              <StatusIcon /> {project.status}
             </Badge>
           </div>
           <CardDescription className="text-xs line-clamp-1">

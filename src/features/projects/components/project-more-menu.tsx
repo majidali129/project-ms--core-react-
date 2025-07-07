@@ -3,32 +3,23 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Task } from "@/types";
+import type { Project } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 
 type ProjectMoreMenuProps = {
-  task: Task;
+  project: Project;
 };
 
-export const ProjectMoreMenu = ({ task }: ProjectMoreMenuProps) => {
-  console.log(task);
+export const ProjectMoreMenu = ({ project }: ProjectMoreMenuProps) => {
+  console.log(project);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <MoreHorizontal />
+        <MoreHorizontal className="size-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[180px]">
-        <DropdownMenuLabel>Change Status</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Mark as Done</DropdownMenuItem>
-          <DropdownMenuItem>Set to progress</DropdownMenuItem>
-          <DropdownMenuItem>Set to review</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>Edit</DropdownMenuItem>
           <DropdownMenuItem>Update</DropdownMenuItem>

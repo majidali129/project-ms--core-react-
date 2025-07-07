@@ -3,6 +3,7 @@ import {
   calendarPath,
   dashboardPath,
   profilePath,
+  projectDetailsPath,
   projectsPath,
   reportsPath,
   settingsPath,
@@ -25,6 +26,7 @@ import { AuthLayout } from "./features/auth/components/auth-layout";
 import { SignUpPage } from "./pages/sign-up";
 import { SignInPage } from "./pages/sign-in";
 import { AppLayout } from "./components/app-layout";
+import { ProjectDetailsPage } from "./pages/project-details-page";
 
 const App = () => {
   return (
@@ -33,6 +35,10 @@ const App = () => {
         <Route index element={<Navigate replace to={dashboardPath()} />} />
         <Route path={dashboardPath()} element={<DashboardPage />} />
         <Route path={projectsPath()} element={<ProjectsPage />} />
+        <Route
+          path={projectDetailsPath("proj-001")}
+          element={<ProjectDetailsPage />}
+        />
         <Route path={tasksPath()} element={<TasksPage />} />
         <Route path={calendarPath()} element={<CalendarPage />} />
         <Route path={teamPath()} element={<TeamPage />} />

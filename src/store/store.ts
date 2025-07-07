@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import projectsReducer from "@/features/projects/project-slice";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    projects: projectsReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -7,10 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, AlertCircle } from "lucide-react";
-import {
-  getPriorityColors,
-  getTaskStatusColors,
-} from "@/utils/constans/colors";
+import { getPriorityColors, getTaskStatusColors } from "@/utils/constants";
 import { format } from "date-fns";
 import type { Task } from "@/types";
 import { cn } from "@/lib/utils";

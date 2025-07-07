@@ -52,7 +52,7 @@ export const FormItem = ({
           id={name}
           type={type}
           placeholder={placeholder}
-          onKeyUp={onKeyPress}
+          onKeyDown={onKeyPress}
         />
       )}
     </div>

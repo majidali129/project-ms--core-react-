@@ -33,7 +33,7 @@ export const ReusableDialog = ({
 
         <DialogContent className="sm:max-w-[30rem] p-0 border-none">
           {title && description && (
-            <DialogHeader>
+            <DialogHeader className="p-6">
               <DialogTitle>{title}</DialogTitle>
               <DialogDescription>{description}</DialogDescription>
             </DialogHeader>

@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { teams } from "@/data/teams";
+import { useAppDispatch } from "@/store/hooks";
 import type { Project } from "@/types";
 import { format } from "date-fns";
 import { Plus, Target, X } from "lucide-react";
@@ -20,6 +21,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
+import { addProject } from "../project-slice";
 
 const initialState: Pick<
   Project,
@@ -50,6 +52,7 @@ type CreateProjectFormProps = {
 
 export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   const id = useId();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [newTag, setNewTag] = useState("");
@@ -80,11 +83,17 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   ) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      e.stopPropagation();
       addTag();
     }
   };
 
   const handleSubmit = (e: FormEvent) => {
+    // if ((e.nativeEvent as unknown).submitter?.id === "tags") {
+    //   e.preventDefault();
+    //   return;
+    // }
+
     setLoading(true);
     e.preventDefault();
     const newProject: Project = {
@@ -97,7 +106,8 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    console.log(newProject);
+
+    dispatch(addProject(newProject));
 
     setTimeout(() => {
       onClose?.();
@@ -176,6 +186,7 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
             <div className="flex gap-2 items-center">
               <div className="w-full">
                 <FormItem
+                  required={false}
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   label="Tags"

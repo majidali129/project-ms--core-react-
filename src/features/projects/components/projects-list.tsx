@@ -1,11 +1,12 @@
 import { ProjectItem } from "./project-item";
-import { projects } from "@/data/projects";
 import { Input } from "@/components/ui/input";
 import { TaskStatusSelect } from "@/features/tasks/components/task-status-select";
 import { TaskPrioritySelect } from "@/features/tasks/components/task-priority-select";
 import { Search } from "lucide-react";
+import { useAppSelector } from "@/store/hooks";
 
 export const ProjectsList = () => {
+  const projects = useAppSelector((state) => state.projects.projects);
   return (
     <div className="space-y-8">
       <div className="flex-between gap-4">
