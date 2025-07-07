@@ -10,6 +10,7 @@ import type { Project } from "@/types";
 import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
 import { deleteProject } from "../project-slice";
+import { Button } from "@/components/ui/button";
 
 type ProjectMoreMenuProps = {
   project: Project;
@@ -21,7 +22,9 @@ export const ProjectMoreMenu = ({ project }: ProjectMoreMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <MoreHorizontal className="size-5" />
+        <Button size="icon" variant="ghost" className="">
+          <MoreHorizontal className="size-5 " />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[180px]">
         <DropdownMenuGroup>
