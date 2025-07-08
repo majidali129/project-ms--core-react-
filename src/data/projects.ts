@@ -1,5 +1,5 @@
 import type { Project } from "@/types/index";
-import { teams } from "./teams";
+import { users } from "./users";
 
 export const projects: Project[] = [
   {
@@ -13,7 +13,10 @@ export const projects: Project[] = [
     createdBy: "PROJECT-MANAGER",
     startDate: new Date("2025-05-10").toISOString(),
     endDate: new Date("2025-07-10").toISOString(),
-    teams: [teams[0], teams[1]],
+    team: {
+      name: "team-alpha",
+      members: [users[3], users[4], users[5]],
+    },
     tags: ["education", "e-learning"],
     createdAt: new Date("2025-05-10").toISOString(),
     updatedAt: new Date("2025-06-25").toISOString(),
@@ -29,7 +32,10 @@ export const projects: Project[] = [
     createdBy: "ADMIN",
     startDate: new Date("2025-04-20").toISOString(),
     endDate: new Date("2025-07-01").toISOString(),
-    teams: [teams[1], teams[3]],
+    team: {
+      name: "team-bravo",
+      members: [users[5], users[6], users[7]],
+    },
     tags: ["ecommerce", "admin"],
     createdAt: new Date("2025-04-20").toISOString(),
     updatedAt: new Date("2025-06-20").toISOString(),
@@ -45,7 +51,10 @@ export const projects: Project[] = [
     createdBy: "PROJECT-MANAGER",
     startDate: new Date("2025-02-01").toISOString(),
     endDate: new Date("2025-05-01").toISOString(),
-    teams: [teams[0], teams[2]],
+    team: {
+      name: "team-charlie",
+      members: [users[7], users[8]],
+    },
     tags: ["finance", "mobile"],
     createdAt: new Date("2025-02-01").toISOString(),
     updatedAt: new Date("2025-05-01").toISOString(),
@@ -61,7 +70,10 @@ export const projects: Project[] = [
     createdBy: "ADMIN",
     startDate: new Date("2025-03-01").toISOString(),
     endDate: new Date("2025-06-01").toISOString(),
-    teams: [teams[0]],
+    team: {
+      name: "team-epsilon",
+      members: [users[9], users[3]],
+    },
     tags: ["marketing", "UI"],
     createdAt: new Date("2025-03-01").toISOString(),
     updatedAt: new Date("2025-06-01").toISOString(),
@@ -77,7 +89,10 @@ export const projects: Project[] = [
     spent: 403,
     startDate: new Date("2025-06-15").toISOString(),
     endDate: new Date("2025-08-30").toISOString(),
-    teams: [teams[1], teams[2], teams[3]],
+    team: {
+      name: "team-horizon",
+      members: [users[9], users[10]],
+    },
     tags: ["analytics", "backend"],
     createdAt: new Date("2025-06-15").toISOString(),
     updatedAt: new Date("2025-06-30").toISOString(),
@@ -93,7 +108,10 @@ export const projects: Project[] = [
     createdBy: "PROJECT-MANAGER",
     startDate: new Date("2025-06-25").toISOString(),
     endDate: new Date("2025-09-30").toISOString(),
-    teams: [teams[2]],
+    team: {
+      name: "team-quantum",
+      members: [users[10], users[5]],
+    },
     tags: ["AI", "support", "chatbot"],
     createdAt: new Date("2025-06-25").toISOString(),
     updatedAt: new Date("2025-06-29").toISOString(),
@@ -109,7 +127,10 @@ export const projects: Project[] = [
     spent: 201,
     startDate: new Date("2025-06-20").toISOString(),
     endDate: new Date("2025-07-30").toISOString(),
-    teams: [teams[0], teams[3]],
+    team: {
+      name: "team-sigma",
+      members: [users[11], users[12]],
+    },
     tags: ["performance", "frontend"],
     createdAt: new Date("2025-06-20").toISOString(),
     updatedAt: new Date("2025-06-28").toISOString(),
@@ -125,7 +146,10 @@ export const projects: Project[] = [
     createdBy: "PROJECT-MANAGER",
     startDate: new Date("2025-06-01").toISOString(),
     endDate: new Date("2025-08-15").toISOString(),
-    teams: [teams[1]],
+    team: {
+      name: "team-quantum",
+      members: [users[13], users[114]],
+    },
     tags: ["i18n", "translation"],
     createdAt: new Date("2025-06-01").toISOString(),
     updatedAt: new Date("2025-06-21").toISOString(),
@@ -141,7 +165,10 @@ export const projects: Project[] = [
     spent: 301,
     startDate: new Date("2025-05-15").toISOString(),
     endDate: new Date("2025-08-01").toISOString(),
-    teams: [teams[0], teams[2]],
+    team: {
+      name: "team-vertex",
+      members: [users[0], users[1]],
+    },
     tags: ["HR", "management", "system"],
     createdAt: new Date("2025-05-15").toISOString(),
     updatedAt: new Date("2025-06-25").toISOString(),
@@ -157,7 +184,10 @@ export const projects: Project[] = [
     createdBy: "ADMIN",
     startDate: new Date("2025-03-20").toISOString(),
     endDate: new Date("2025-05-20").toISOString(),
-    teams: [teams[3]],
+    team: {
+      name: "team-nova",
+      members: [users[15], users[18]],
+    },
     tags: ["feedback", "customer", "ui"],
     createdAt: new Date("2025-03-20").toISOString(),
     updatedAt: new Date("2025-05-20").toISOString(),

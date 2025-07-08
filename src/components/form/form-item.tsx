@@ -40,7 +40,7 @@ export const FormItem = ({
           autoComplete="off"
           id={name}
           required
-          rows={5}
+          className="!min-h-18"
         />
       ) : (
         <Input

@@ -1,7 +1,7 @@
 import { SortFilterSelect } from "@/components/sort-filter-select";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { applyFilters } from "../project-slice";
 import type { ProjectStatus } from "@/types";
+import { applyProjectFilters } from "../project-slice";
 
 const statusOptions = [
   { label: "All Status", value: "all" },
@@ -18,7 +18,7 @@ export const ProjectStatusSelect = () => {
   );
   const dispatch = useAppDispatch();
   const onStatusChange = (value: string) => {
-    dispatch(applyFilters({ status: value as ProjectStatus }));
+    dispatch(applyProjectFilters({ status: value as ProjectStatus }));
   };
 
   return (

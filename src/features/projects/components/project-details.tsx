@@ -23,15 +23,15 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { teams } from "@/data/teams";
-import { useAppSelector } from "@/store/hooks";
-import { projectStatusColor, teamDomainColors } from "@/utils/constants";
+import { users } from "@/data/users";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { projectStatusColor } from "@/utils/constants";
 import { statusIcons } from "@/utils/constants";
 import { formatCurrency } from "@/utils/helpers";
-import { SelectTrigger } from "@radix-ui/react-select";
 import { format } from "date-fns";
 import {
   Clock,
@@ -39,60 +39,96 @@ import {
   Plus,
   Settings,
   Building2,
-  X,
   Users,
   User,
   Calendar,
   DollarSign,
+  X,
+  UserPlus,
+  ClipboardList,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import {
+  addNewMembers,
+  removeMember,
+  updateProjectDeadline,
+  updateProjectStatus,
+} from "../project-slice";
+import type { ProjectStatus } from "@/types";
+import { DatePicker } from "@/components/date-picker";
+import { ReusableDialog } from "@/components/re-usable-dialog";
+import { AssignTaskForm } from "../../tasks/components/assign-task-form";
+import { ProjectTasksList } from "./projec-tasks-list";
 
 type Role = "project-manager" | "admin" | "user";
 const ProjectDetails = () => {
-  const [openTeamAllocateDialog, setOpenTeamAllocateDialog] = useState(false);
+  const [openAddTeamMember, setOpenAddTeamMember] = useState(false);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [isDateDialogOpen, setIsDateDialogOpen] = useState(false);
+  const [domainFilter, setDomainFilter] = useState("all");
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const dispatch = useAppDispatch();
   const { projectId } = useParams<{ projectId: string }>();
   const projects = useAppSelector((state) => state.projects.projects);
-  const project = projects.find((project) => project.id === projectId)!;
-  const [domainFilter, setDomainFilter] = useState("all");
-  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const tasks = useAppSelector((state) => state.tasks.tasks);
   const [role] = useState<Role>("project-manager");
-  const canManageTeams = role === "project-manager" || role === "admin";
+  const project = projects.find((project) => project.id === projectId)!;
+  const isManagerOrAdmin = role === "project-manager" || role === "admin";
+  const [newStatus, setNewStatus] = useState(project.status);
+  const [newEndDate, setNewEndDate] = useState(project.endDate);
+
   const StatusIcon = statusIcons[project.status];
-  const availableDomains = teams.map((team) => team.domain);
-  const allocatedTeamsIDs = project.teams.map((team) => team.id);
-  const totalTeamMembersToProject = project.teams.reduce(
-    (curr, acc) => curr + acc.members.length,
-    0
-  );
 
-  const availableTeams = teams.filter(
-    (team) => !allocatedTeamsIDs.includes(team.id)
+  const availableDomains = Array.from(
+    new Set(users.map((user) => user.domain))
   );
+  const totalTeamMembersToProject = project.team?.members.length;
+  const allocatedUserIDs = project.team?.members.map((member) => member.id);
+  const projectTasks = tasks.filter((task) => task.project === project.id);
 
-  const filteredAvailableTeams =
+  const availableUsers = users.filter(
+    (user) => !allocatedUserIDs?.includes(user.id)
+  );
+  const filteredAvailableusers =
     domainFilter === "all"
-      ? availableTeams
-      : availableTeams.filter((team) => team.domain === domainFilter);
+      ? availableUsers
+      : availableUsers.filter((user) => user.domain === domainFilter);
 
-  const handleTeamAllocation = () => {
-    const newTeams = teams.filter((team) => selectedTeams.includes(team.id));
-    // setProject((prev) => ({ ...prev, teams: [...newTeams, ...prev.teams] }));
-    setOpenTeamAllocateDialog(false);
-    setSelectedTeams([]);
-    setDomainFilter("all");
-  };
-
-  const handleRemoveAllocatedTeam = (teamId: string) => {
-    // setProject((prev) => ({
-    //   ...prev,
-    //   teams: prev.teams.filter((team) => team.id !== teamId),
-    // }));
-  };
-
+  // MOVE TO TOP ON MOUNT
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const handleUserAllocation = () => {
+    dispatch(addNewMembers({ projectId: project.id as string, selectedUsers }));
+
+    // setTimeout(() => {
+    setOpenAddTeamMember(false);
+    setDomainFilter("all");
+    setSelectedUsers([]);
+    // }, 500);
+  };
+
+  const handleStatusUpdate = () => {
+    dispatch(
+      updateProjectStatus({
+        projectId: project.id as string,
+        status: newStatus,
+      })
+    );
+
+    setIsStatusDialogOpen(false);
+  };
+  const handleDateUpdate = () => {
+    dispatch(
+      updateProjectDeadline({
+        projectId: project.id as string,
+        endDate: newEndDate,
+      })
+    );
+    setIsDateDialogOpen(false);
+  };
 
   return (
     <section className="space-y-6">
@@ -113,14 +149,14 @@ const ProjectDetails = () => {
         </div>
         <div className="flex items-center flex-col *:max-md:w-full md:flex-row gap-2">
           <Dialog
-            open={!!openTeamAllocateDialog}
-            onOpenChange={setOpenTeamAllocateDialog}
+            open={!!openAddTeamMember}
+            onOpenChange={setOpenAddTeamMember}
           >
-            {allocatedTeamsIDs.length === 0 && (
+            {allocatedUserIDs?.length === 0 && (
               <DialogTrigger asChild>
-                <Button onClick={() => setOpenTeamAllocateDialog(true)}>
+                <Button onClick={() => setOpenAddTeamMember(true)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Allocate Teams
+                  Add Member
                 </Button>
               </DialogTrigger>
             )}
@@ -153,11 +189,11 @@ const ProjectDetails = () => {
 
                 {/* Available Teams */}
                 <div className="space-y-3">
-                  <Label>Available Teams {availableTeams.length}</Label>
-                  {availableTeams.length === 0 && (
+                  <Label>Available Teams {availableUsers.length}</Label>
+                  {availableUsers.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">
                       <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>No teams available for allocation</p>
+                      <p>No users available for allocation</p>
                       {domainFilter !== "all" && (
                         <p className="text-sm">
                           Try changing the domain filter
@@ -166,21 +202,21 @@ const ProjectDetails = () => {
                     </div>
                   )}
                   <div className="grid gap-3 max-h-60 overflow-y-auto">
-                    {filteredAvailableTeams.map((team) => (
+                    {filteredAvailableusers.map((user) => (
                       <div
-                        key={team.id}
+                        key={user.id}
                         className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50"
                       >
                         <Checkbox
-                          id={team.name}
-                          checked={selectedTeams.includes(team.id)}
+                          id={user.id}
+                          checked={selectedUsers.includes(user.id)}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              setSelectedTeams([...selectedTeams, team.id]);
+                              setSelectedUsers([...selectedUsers, user.id]);
                             } else {
-                              setSelectedTeams(
-                                selectedTeams.filter(
-                                  (sTeam) => sTeam !== team.id
+                              setSelectedUsers(
+                                selectedUsers.filter(
+                                  (sUser) => sUser !== user.id
                                 )
                               );
                             }
@@ -188,20 +224,16 @@ const ProjectDetails = () => {
                         />
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center justify-between">
-                            <Label htmlFor={team.name}>
+                            <Label htmlFor={user.id}>
                               <h4 className="font-medium text-sm">
-                                {team.name}
+                                {user.userName}
                               </h4>
                             </Label>
-                            <Badge variant="outline">{team.domain}</Badge>
+                            <Badge variant="outline">{user.domain}</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">
-                            {team.description}
-                          </p>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Users className="w-3 h-3" />
-                            <span>{team.members.length}</span>
-                          </div>
+                          {/* <p className="text-sm text-muted-foreground">
+                            {user.description}
+                          </p> */}
                         </div>
                       </div>
                     ))}
@@ -210,15 +242,20 @@ const ProjectDetails = () => {
                 {/* Selected Teams Summary */}
                 <div className="p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm font-medium text-blue-900">
-                    {selectedTeams.length} team(s) selected for allocation
+                    {selectedUsers.length} user(s) selected for allocation
                   </p>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline">Cancel</Button>
                   <Button
-                    disabled={selectedTeams.length === 0}
-                    onClick={handleTeamAllocation}
+                    variant="outline"
+                    onClick={() => setOpenAddTeamMember(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    disabled={selectedUsers.length === 0}
+                    onClick={handleUserAllocation}
                   >
                     Allocate Selected Teams
                   </Button>
@@ -226,7 +263,149 @@ const ProjectDetails = () => {
               </div>
             </DialogContent>
           </Dialog>
-          <Button variant="outline">
+
+          {isManagerOrAdmin && (
+            <div className="flex items-center gap-1.5">
+              {/* Assign Task to Members */}
+
+              <ReusableDialog
+                className="sm:!max-w-[35rem]"
+                children={<AssignTaskForm project={project} />}
+                trigger={
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Assign Task
+                    </Button>
+                  </DialogTrigger>
+                }
+              />
+              {/* Status Update Dialog */}
+              <Dialog
+                open={isStatusDialogOpen}
+                onOpenChange={setIsStatusDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Target className="w-4 h-4 mr-2" />
+                    Update Status
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="!max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle>Update Project Status</DialogTitle>
+                    <DialogDescription>
+                      Change the current status of this project
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Current Status</Label>
+                      <div className="flex items-center gap-2 p-2 border rounded">
+                        <StatusIcon className="w-4 h-4" />
+                        <span className="capitalize">
+                          {project.status.replace("-", " ")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>New Status</Label>
+                      <Select
+                        value={newStatus}
+                        onValueChange={(value: ProjectStatus) =>
+                          setNewStatus(value)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="planning">Planning</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="on-hold">On Hold</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex justify-end gap-2 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsStatusDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleStatusUpdate}
+                        disabled={newStatus === project.status}
+                      >
+                        Update Status
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              {/* Due Date Update Dialog */}
+              <Dialog
+                open={isDateDialogOpen}
+                onOpenChange={setIsDateDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Update Due Date
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="!max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle>Update Due Date</DialogTitle>
+                    <DialogDescription>
+                      Change the project's end date
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Current Due Date</Label>
+                      <div className="flex items-center gap-2 p-2 border rounded">
+                        <Calendar className="w-4 h-4" />
+                        <span>{format(project.endDate, "MMM dd, yyyy")}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <DatePicker
+                        label="New Due Date"
+                        defaultValue={format(
+                          new Date(newEndDate),
+                          "MMM dd, yyyy"
+                        )}
+                        onDateChange={(date) =>
+                          setNewEndDate(date.toISOString())
+                        }
+                      />
+                    </div>
+                    <div className="flex justify-end gap-2 pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsDateDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleDateUpdate}
+                        disabled={
+                          new Date(newEndDate).getTime() ===
+                          new Date(project.endDate).getTime()
+                        }
+                      >
+                        Update Due Date
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          <Button variant="outline" size="sm">
             <Settings />
             Edit Project
           </Button>
@@ -270,9 +449,6 @@ const ProjectDetails = () => {
             <div className="text-2xl font-bold">
               {totalTeamMembersToProject}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Across {project.teams.length} teams
-            </p>
           </CardContent>
         </Card>
 
@@ -296,6 +472,20 @@ const ProjectDetails = () => {
             </p>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tasks</CardTitle>
+            <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{projectTasks.length || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {projectTasks.filter((task) => task.status === "done").length ||
+                0}{" "}
+              completed
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Project Details */}
@@ -315,39 +505,50 @@ const ProjectDetails = () => {
             </CardContent>
           </Card>
 
+          {/* Project Tasks */}
+          <ProjectTasksList project={project} />
+
           {/* Allocated Teams */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
-                  <h3> Allocated Teams ({project.teams.length})</h3>
+                  <h3>
+                    {" "}
+                    Allocated Team{" "}
+                    <Badge className="ml-2" variant="secondary">
+                      {project.team?.name}
+                    </Badge>{" "}
+                  </h3>
                 </CardTitle>
-                {canManageTeams && project.teams.length > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setOpenTeamAllocateDialog(true)}
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add More
-                  </Button>
-                )}
+                {isManagerOrAdmin &&
+                  project.team &&
+                  project.team.members.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setOpenAddTeamMember(true)}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add More
+                    </Button>
+                  )}
               </div>
               <CardDescription>
-                Teams currently working on this project
+                Team members currently working on this project
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {project.teams.length === 0 ? (
+              {project.team?.members.length === 0 ? (
                 <div className="text-center py-8">
                   <Building2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <h3>No Teams Allocated</h3>
+                  <h3>No Team or Team Member Allocated Yet.</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     This project doesn't have any teams assigned yet.
                   </p>
-                  {canManageTeams && (
-                    <Button onClick={() => setOpenTeamAllocateDialog(true)}>
+                  {isManagerOrAdmin && (
+                    <Button onClick={() => setOpenAddTeamMember(true)}>
                       <Plus className="w-4 h-4 mr-2" />
                       Allocate Teams
                     </Button>
@@ -355,73 +556,52 @@ const ProjectDetails = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {project.teams.map((team) => (
-                    <div key={team.id} className="border rounded p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-medium">{team.name}</h4>
-                            <Badge
-                              variant="outline"
-                              className={
-                                teamDomainColors[
-                                  team.domain as keyof typeof teamDomainColors
-                                ]
-                              }
-                            >
-                              {team.domain}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {team.description}
-                          </p>
-                        </div>
-                        {canManageTeams && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveAllocatedTeam(team.id)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-
-                      {/* Team Members */}
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm font-medium">
-                          <Users className="w-4 h-4" />
-                          Team Members ({team.members.length})
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {team.members.map((member) => (
-                            <div
-                              key={member.id}
-                              className="flex items-center gap-2 text-sm"
-                            >
-                              <Avatar className="w-6 h-6">
-                                <AvatarImage
-                                  src={`/placeholder.svg?height=24&width=24`}
-                                  alt={member.userName}
-                                />
-                                <AvatarFallback className="text-xs">
-                                  {member.userName
-                                    .split(".")
-                                    .map((n) => n[0])
-                                    .join("")
-                                    .toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="truncate">
-                                {member.userName}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium">
+                      <Users className="w-4 h-4" />
+                      Team Members ({project.team?.members.length})
                     </div>
-                  ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-2 py-2">
+                      {project.team?.members.map((member) => (
+                        <div
+                          key={member.id}
+                          className="flex items-center justify-between gap-2 text-sm shadow-lg border border-input rounded py-1.5 px-2"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage
+                                src={`/placeholder.svg?height=24&width=24`}
+                                alt={member.userName}
+                              />
+                              <AvatarFallback className="text-xs">
+                                {member.userName
+                                  .split(".")
+                                  .map((n) => n[0])
+                                  .join("")
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="truncate">{member.userName}</span>
+                          </div>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="rounded-full hover:bg-destructive/10"
+                            onClick={() =>
+                              dispatch(
+                                removeMember({
+                                  projectId: project.id as string,
+                                  memberId: member.id,
+                                })
+                              )
+                            }
+                          >
+                            <X className="text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -465,7 +645,7 @@ const ProjectDetails = () => {
                 </div>
               </div>
 
-              {canManageTeams && (
+              {isManagerOrAdmin && (
                 <>
                   <Separator />
 
@@ -533,7 +713,7 @@ const ProjectDetails = () => {
           </Card>
 
           {/* Quick Actions */}
-          {canManageTeams && (
+          {isManagerOrAdmin && (
             <Card>
               <CardHeader>
                 <CardTitle>

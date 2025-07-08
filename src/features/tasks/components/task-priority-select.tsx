@@ -1,5 +1,7 @@
 import { SortFilterSelect } from "@/components/sort-filter-select";
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { applyTaskFilters } from "../task-slice";
+import type { Priority } from "@/types";
 
 const priorityOptions = [
   { label: "All Priority", value: "all" },
@@ -10,17 +12,17 @@ const priorityOptions = [
 ];
 
 export const TaskPrioritySelect = () => {
-  const [status, setStatus] = useState("all");
-  const onStatusChange = (value: string) => {
-    console.log("Selected priority:", value);
-    setStatus(value);
+  const priority = useAppSelector((state) => state.tasks.taskFilters.priority);
+  const dispatch = useAppDispatch();
+  const onPriorityChange = (value: string) => {
+    dispatch(applyTaskFilters({ priority: value as Priority }));
   };
 
   return (
     <SortFilterSelect
       options={priorityOptions}
-      value={status}
-      onValueChange={onStatusChange}
+      value={priority}
+      onValueChange={onPriorityChange}
     />
   );
 };

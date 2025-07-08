@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAppDispatch } from "@/store/hooks";
-import type { Priority, Task, TaskType } from "@/types";
+import type { Priority, Project, Task, TaskType } from "@/types";
 import { taskPriorityOptions, taskTypeOptions } from "@/utils/constants";
 import { format } from "date-fns";
 import { Plus, Target, X } from "lucide-react";
@@ -22,33 +22,41 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
-import { addTask } from "../task-slice";
+import { assignTaskToMember } from "../task-slice";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const initialState: Omit<Task, "id" | "createdAt" | "updatedAt" | "status"> = {
   title: "",
   description: "",
-  assignee: null,
-  project: null,
-  isPersonal: true,
+  project: "",
+  assignee: "",
   type: "feature",
   priority: "medium",
   dueDate: null,
   tags: [],
   estimatedTime: "",
   createdBy: "",
+  isPersonal: false,
 };
 
-type CreateTaskFormProps = {
+type AssignTaskFormProps = {
+  project: Project;
   onClose?: () => void;
 };
-
-export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
+export const AssignTaskForm = ({ project, onClose }: AssignTaskFormProps) => {
   const id = useId();
   const [formData, setFormData] = useState(initialState);
-  const [loading, setLoading] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const dispatch = useAppDispatch();
+  const projectTeamMembers = project.team?.members;
 
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -81,37 +89,40 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    const newTask: Task = {
+    const newTask = {
       id: `task-${Math.floor(Math.random() * 2919)}-${id}`,
       ...formData,
       status: "todo",
       tags: selectedTags,
-      createdBy: "pm-01", // this'll be current user
+      project: project.id as string,
+      createdBy: "pm-01",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    } satisfies Task as Task;
 
-    dispatch(addTask({ task: newTask }));
+    dispatch(assignTaskToMember({ task: newTask }));
 
     onClose?.();
   };
+
+  console.log(formData);
+
   return (
-    <Card className="w-full shadow-none border-none py-6">
+    <Card className="w-full shadow-none border-none py-6 ">
       <CardHeader>
         <CardTitle className="text-2xl flex items-center gap-2">
           <Target className="w-6 h-6" />
-          Create New Task
+          Assign New Task
         </CardTitle>
         <CardDescription>
-          Fill in the details below to create a new task.
+          Create and assign a task to a team member.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <FormItem
             name="title"
-            label="Title"
+            label="Task Title"
             value={formData.title}
             onChange={handleOnChange}
             placeholder="Fix login fail..."
@@ -124,6 +135,28 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
             onChange={handleOnChange}
             placeholder="Describe the task objectives..."
           />
+
+          <div className="space-y-1.5">
+            <Label>Select assignee</Label>
+            <Select
+              value={formData.assignee!}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, assignee: value }))
+              }
+            >
+              <SelectTrigger className="w-full text-start text-sm !outline-1 outline-border py-1.5 px-2 rounded">
+                <SelectValue placeholder="Select domain" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Domains</SelectItem>
+                {projectTeamMembers?.map((member) => (
+                  <SelectItem key={member.id} value={member.userName}>
+                    {member.userName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 *:w-full">
             <SortFilterSelect
@@ -161,7 +194,7 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
               }
             />
             <FormItem
-              label="estimatedTime"
+              label="Estimated Time"
               value={formData.estimatedTime}
               onChange={handleOnChange}
               name="estimatedTime"
@@ -215,12 +248,11 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
             )}
           </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => onClose?.()}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">{loading ? "Wait..." : "Create Task"}</Button>
+            <Button type="submit">Assign Task</Button>
           </div>
         </form>
       </CardContent>

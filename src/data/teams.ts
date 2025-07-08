@@ -1,9 +1,7 @@
-import type { Team } from "@/types";
-
-export const teams: Team[] = [
+export const teams = [
   {
     id: "team-001",
-    name: "Frontend Wizards",
+    name: "team-alpha",
     description: "Specializes in building modern UI with React and Tailwind.",
     domain: "frontend",
     members: [

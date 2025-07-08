@@ -1,5 +1,5 @@
 import { projects } from "@/data/projects";
-import { teams } from "@/data/teams";
+import { users } from "@/data/users";
 import type { Project, ProjectStatus } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -22,6 +22,8 @@ const initialState = {
   query: "",
 } satisfies ProjectsInitialState as ProjectsInitialState;
 
+// TODO: authorization check for PM || ADMIN for actions
+
 export const projectSlice = createSlice({
   name: "project",
   initialState,
@@ -43,36 +45,40 @@ export const projectSlice = createSlice({
         project.id === projectId ? updatedProject : project
       );
     },
-    allocateNewTeam: (
+    addNewMembers: (
       state,
-      action: PayloadAction<{ projectId: string; allocatedTeams: string[] }>
+      action: PayloadAction<{ projectId: string; selectedUsers: string[] }>
     ) => {
-      const { projectId, allocatedTeams } = action.payload;
-      const newTeams = teams.filter((team) => allocatedTeams.includes(team.id));
-
-      state.projects = state.projects.map((project) =>
-        project.id === projectId
-          ? { ...project, teams: [...newTeams, ...project.teams] }
-          : project
+      const { projectId, selectedUsers } = action.payload;
+      const newMembers = users.filter((user) =>
+        selectedUsers.includes(user.id)
       );
+
+      const project = state.projects.find((p) => p.id === projectId);
+      if (project) {
+        project.team?.members.push(...newMembers);
+      }
     },
 
-    deAllocateTeam: (
+    removeMember: (
       state,
-      action: PayloadAction<{ projectId: string; teamId: string }>
+      action: PayloadAction<{ projectId: string; memberId: string }>
     ) => {
-      const { projectId, teamId } = action.payload;
-      state.projects = state.projects.map((project) =>
-        project.id === projectId
-          ? {
-              ...project,
-              teams: project.teams.filter((team) => team.id !== teamId),
-            }
-          : project
-      );
+      const { projectId, memberId } = action.payload;
+      const project = state.projects.find((p) => p.id === projectId);
+      if (project) {
+        if (project.team) {
+          project.team.members = project.team?.members.filter(
+            (member) => member.id !== memberId
+          );
+        }
+      }
     },
 
-    applyFilters: (state, action: PayloadAction<{ status: ProjectStatus }>) => {
+    applyProjectFilters: (
+      state,
+      action: PayloadAction<{ status: ProjectStatus }>
+    ) => {
       state.projectFilters.status = action.payload.status;
     },
 
@@ -80,17 +86,40 @@ export const projectSlice = createSlice({
       if (action.payload) state.projectFilters.status = "all";
       state.query = action.payload;
     },
+
+    updateProjectDeadline: (
+      state,
+      action: PayloadAction<{ endDate: string; projectId: string }>
+    ) => {
+      const { endDate, projectId } = action.payload;
+      const project = state.projects.find((p) => p.id === projectId);
+      if (project) project.endDate = endDate;
+    },
+
+    updateProjectStatus: (
+      state,
+      action: PayloadAction<{ projectId: string; status: ProjectStatus }>
+    ) => {
+      const { status, projectId } = action.payload;
+
+      const project = state.projects.find((p) => p.id === projectId);
+      if (project) {
+        project.status = status;
+      }
+    },
   },
 });
 
 export const {
   addProject,
   deleteProject,
-  allocateNewTeam,
-  applyFilters,
-  deAllocateTeam,
+  addNewMembers,
+  applyProjectFilters,
+  removeMember,
   updateProject,
   applySearch,
+  updateProjectDeadline,
+  updateProjectStatus,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

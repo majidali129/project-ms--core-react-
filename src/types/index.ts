@@ -8,16 +8,6 @@ export type ProjectStatus =
   | "cancelled";
 export type TaskType = "bug" | "feature" | "improvement";
 
-export type Team = {
-  id: string;
-  name: string;
-  description: string;
-  domain: string;
-  members: { userName: string; id: string }[];
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type Project = {
   id: string | number;
   name: string;
@@ -29,7 +19,15 @@ export type Project = {
   createdBy: string; // PROJECT-MANAGER | ADMIN
   startDate: string;
   endDate: string;
-  teams: Team[];
+  team: {
+    name: string;
+    members: {
+      id: string;
+      userName: string;
+      avatar?: string;
+      domain: string;
+    }[];
+  } | null;
   tags?: string[];
   createdAt: string;
   updatedAt: string;
@@ -39,14 +37,16 @@ export type Task = {
   id: string;
   title: string;
   description: string;
-  project: string;
-  type: TaskType;
   priority: Priority;
   status: TaskStatus;
-  assignee: string | null;
+  project: string | null;
+  type: TaskType;
+  assignee: string | null; // will be target entity
+  isPersonal: boolean;
   dueDate: string | null;
   estimatedTime: string;
   tags: string[];
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
 };

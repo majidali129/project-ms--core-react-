@@ -32,7 +32,7 @@ const initialState: Pick<
   | "createdBy"
   | "startDate"
   | "endDate"
-  | "teams"
+  | "team"
   | "tags"
 > = {
   name: "",
@@ -42,7 +42,7 @@ const initialState: Pick<
   createdBy: teams[0].members[0].userName,
   startDate: new Date().toISOString(),
   endDate: new Date().toISOString(),
-  teams: [],
+  team: null,
   tags: [],
 };
 
@@ -102,9 +102,9 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
       tags: selectedTags,
       status: "planning",
       progress: 0,
-      teams: [teams[0], teams[1]],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      team: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     dispatch(addProject(newProject));
@@ -136,6 +136,7 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
           <FormItem
             name="description"
             label="Description"
+            textarea
             value={formData.description}
             onChange={handleOnChange}
             placeholder="Describe the project objectives, scope, and key deliverables..."

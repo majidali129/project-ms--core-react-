@@ -19,7 +19,9 @@ type TaskItemProps = {
 
 const isOverdue = (task: Task) => {
   return (
-    task.dueDate !== null && task.dueDate < new Date() && task.status !== "done"
+    task.dueDate !== null &&
+    new Date(task.dueDate) < new Date() &&
+    task.status !== "done"
   );
 };
 export const TaskItem = ({ task }: TaskItemProps) => {
@@ -58,17 +60,21 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             {task.description}
           </CardDescription>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={task.assignee!} />
-                <AvatarFallback className="text-xs">
-                  {task.assignee?.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm text-muted-foreground">
-                {task.assignee}
-              </span>
-            </div>
+            {task.createdBy !== "" && (
+              <div className="flex items-center gap-2">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={task.createdBy} />
+                  <AvatarFallback className="text-xs">
+                    {task.createdBy.length
+                      ? task.createdBy?.slice(0, 2).toLocaleUpperCase()
+                      : task.assignee?.slice(0, 2).toLocaleUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm text-muted-foreground">
+                  {task.createdBy}
+                </span>
+              </div>
+            )}
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4" />
               <span
@@ -84,9 +90,11 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[0.8rem]">
-              {task.project}
-            </Badge>
+            {task.isPersonal && (
+              <Badge variant="outline" className="text-[0.8rem]">
+                Personal
+              </Badge>
+            )}
             {task.tags.slice(0, 1).map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}

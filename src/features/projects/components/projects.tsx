@@ -18,6 +18,7 @@ export const Projects = () => {
         </div>
 
         <ReusableDialog
+          className="sm:max-w-[35rem]"
           trigger={
             <DialogTrigger asChild>
               <Button className="gap-2">

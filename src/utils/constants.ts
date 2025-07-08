@@ -42,3 +42,16 @@ export const teamDomainColors = {
   Mobile: "bg-indigo-100 text-indigo-800",
   Data: "bg-teal-100 text-teal-800",
 };
+
+export const taskTypeOptions = [
+  { label: "Bug", value: "bug" },
+  { label: "Feature", value: "feature" },
+  { label: "Improvement", value: "improvement" },
+];
+
+export const taskPriorityOptions = [
+  { label: "High", value: "high" },
+  { label: "Medium", value: "medium" },
+  { label: "Low", value: "low" },
+  { label: "Urgent", value: "urgent" },
+];

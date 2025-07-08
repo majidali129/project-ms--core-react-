@@ -1,5 +1,7 @@
 import { SortFilterSelect } from "@/components/sort-filter-select";
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { applyTaskFilters } from "../task-slice";
+import type { TaskStatus } from "@/types";
 
 const statusOptions = [
   { label: "All Status", value: "all" },
@@ -11,10 +13,10 @@ const statusOptions = [
 ];
 
 export const TaskStatusSelect = () => {
-  const [status, setStatus] = useState("all");
+  const status = useAppSelector((state) => state.tasks.taskFilters.status);
+  const dispatch = useAppDispatch();
   const onStatusChange = (value: string) => {
-    console.log("Selected status:", value);
-    setStatus(value);
+    dispatch(applyTaskFilters({ status: value as TaskStatus }));
   };
 
   return (
