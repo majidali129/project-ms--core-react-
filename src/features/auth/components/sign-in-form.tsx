@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Apple, Chrome, Github, Loader, Twitter } from "lucide-react";
-import { Link, useNavigate } from "react-router";
-import { homePath, signUpPath } from "@/paths";
+import { Link } from "react-router";
+import { homePath } from "@/paths";
 import { useState, type FormEvent } from "react";
 import { FormItem } from "@/components/form/form-item";
 import { useSignIn } from "../hooks/use-sign-in";
@@ -16,7 +16,6 @@ import { useSignIn } from "../hooks/use-sign-in";
 export const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const { signIn, signInLoading } = useSignIn();
 
@@ -94,12 +93,8 @@ export const SignInForm = () => {
 
           <div className="text-sm flex-center">
             <span>Don't have an account?</span>
-            <Button
-              onClick={() => navigate(signUpPath())}
-              variant="link"
-              className="p-0 h-auto"
-            >
-              Sign up
+            <Button variant="link" className="p-0 h-auto" asChild>
+              <Link to={"/auth/sign-up"}>Sign up</Link>
             </Button>
           </div>
         </CardContent>

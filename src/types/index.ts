@@ -25,9 +25,10 @@ export type Project = {
       id: string;
       userName: string;
       avatar?: string;
+      email?: string;
       domain: string;
     }[];
-  } | null;
+  };
   tags?: string[];
   createdAt: string;
   updatedAt: string;

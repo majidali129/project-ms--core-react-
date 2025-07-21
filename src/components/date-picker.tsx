@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 function formatDate(date: Date | undefined) {
   if (!date) {
@@ -61,7 +62,7 @@ export const DatePicker = ({
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}
+          value={format(new Date(value), "dd MM yyyy")}
           placeholder="June 01, 2025"
           className="bg-background pr-10"
           onChange={(e) => {

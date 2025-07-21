@@ -16,6 +16,7 @@ export const Tasks = () => {
         </div>
 
         <ReusableDialog
+          className="sm:!max-w-[35rem] max-h-[80vh] md:max-h-[90vh] overflow-y-auto"
           trigger={
             <DialogTrigger asChild>
               <Button className="gap-2">

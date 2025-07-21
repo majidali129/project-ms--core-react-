@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUser } from "@/features/auth/hooks/use-user";
 
 const initialState: Omit<Task, "id" | "createdAt" | "updatedAt" | "status"> = {
   title: "",
@@ -56,6 +57,7 @@ export const AssignTaskForm = ({ project, onClose }: AssignTaskFormProps) => {
   const [newTag, setNewTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const dispatch = useAppDispatch();
+  const { user } = useUser();
   const projectTeamMembers = project.team?.members;
 
   const handleOnChange = (
@@ -95,7 +97,7 @@ export const AssignTaskForm = ({ project, onClose }: AssignTaskFormProps) => {
       status: "todo",
       tags: selectedTags,
       project: project.id as string,
-      createdBy: "pm-01",
+      createdBy: user?.user_metadata.userName,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     } satisfies Task as Task;
@@ -104,8 +106,6 @@ export const AssignTaskForm = ({ project, onClose }: AssignTaskFormProps) => {
 
     onClose?.();
   };
-
-  console.log(formData);
 
   return (
     <Card className="w-full shadow-none border-none py-6 ">
@@ -145,10 +145,9 @@ export const AssignTaskForm = ({ project, onClose }: AssignTaskFormProps) => {
               }
             >
               <SelectTrigger className="w-full text-start text-sm !outline-1 outline-border py-1.5 px-2 rounded">
-                <SelectValue placeholder="Select domain" />
+                <SelectValue placeholder="Choose target user" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Domains</SelectItem>
                 {projectTeamMembers?.map((member) => (
                   <SelectItem key={member.id} value={member.userName}>
                     {member.userName}

@@ -12,7 +12,7 @@ export const tasks: Task[] = [
     status: "todo",
     assignee: "alice",
     isPersonal: false,
-    createdBy: "random",
+    createdBy: "user1",
     dueDate: new Date("2025-07-05").toISOString(),
     estimatedTime: "2h",
     tags: ["auth", "bug"],

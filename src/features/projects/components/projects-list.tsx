@@ -4,14 +4,29 @@ import { Search } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { ProjectStatusSelect } from "./project-status-select";
 import { applySearch } from "../project-slice";
+import { useUser } from "@/features/auth/hooks/use-user";
+import type { Role } from "@/services/user-service";
 
 export const ProjectsList = () => {
   const projects = useAppSelector((state) => state.projects.projects);
   const query = useAppSelector((state) => state.projects.query).toLowerCase();
   const { status } = useAppSelector((state) => state.projects.projectFilters);
   const dispatch = useAppDispatch();
+  const { user } = useUser();
+  const role = user?.user_metadata.role as Role;
 
-  const filteredProjects = projects
+  const rProjects =
+    role === "admin"
+      ? projects
+      : role === "project-manager"
+      ? projects.filter(
+          (project) => project.createdBy === user?.user_metadata.userName
+        )
+      : projects.filter((project) =>
+          project.team?.members.some((member) => member?.id === user?.id)
+        );
+
+  const filteredProjects = rProjects
     .filter(
       (project) =>
         project.name.toLowerCase().includes(query) ||
@@ -22,10 +37,11 @@ export const ProjectsList = () => {
       return matchesSttus;
     });
 
+  console.log(filteredProjects);
   console.log("query", query);
   return (
     <div className="space-y-8">
-      <div className="flex-between gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -40,7 +56,7 @@ export const ProjectsList = () => {
             className="pl-10"
           />
         </div>
-        <div className="flex gap-4">
+        <div className="w-full md:w-52">
           <ProjectStatusSelect />
         </div>
       </div>

@@ -20,6 +20,7 @@ export const TaskPrioritySelect = () => {
 
   return (
     <SortFilterSelect
+      className="w-full"
       options={priorityOptions}
       value={priority}
       onValueChange={onPriorityChange}

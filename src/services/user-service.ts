@@ -1,17 +1,28 @@
 import { supabase } from "@/lib/supabse";
 
-export type SignUpType = {
-  email: string;
-  password: string;
-};
+export type Role = "project-manager" | "admin" | "user";
 
 export type SignInType = {
   email: string;
   password: string;
 };
 
-export const signUpUser = async (credentials: SignUpType) => {
-  const { data, error } = await supabase.auth.signUp(credentials);
+export const signUpUser = async (
+  email: string,
+  password: string,
+  userName: string,
+  role: Role
+) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        userName,
+        role,
+      },
+    },
+  });
 
   if (error) {
     throw new Error(error.message);
@@ -41,6 +52,5 @@ export const getCurrentUser = async () => {
 };
 export const signOutUser = async () => {
   const { error } = await supabase.auth.signOut();
-  console.log("sign out error:", error);
-  throw new Error(error?.message);
+  if (error) throw new Error(error?.message);
 };

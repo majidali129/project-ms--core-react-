@@ -253,19 +253,10 @@ export const TeamsList = () => {
                   <div className="text-sm font-medium mb-2">Skills</div>
                   <div className="flex flex-wrap gap-1">
                     {member.skills.slice(0, 3).map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant="secondary"
-                        className="text-xs"
-                      >
+                      <Badge key={skill} variant="outline" className="text-xs">
                         {skill}
                       </Badge>
                     ))}
-                    {member.skills.length > 3 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{member.skills.length - 3}
-                      </Badge>
-                    )}
                   </div>
                 </div>
               </CardContent>

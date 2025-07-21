@@ -31,21 +31,21 @@ export const ReusableDialog = ({
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form>
-        {trigger}
+      {trigger}
 
-        <DialogContent
-          className={cn("sm:max-w-[30rem] p-0 border-none", className)}
-        >
-          {title && description && (
-            <DialogHeader className="p-6">
-              <DialogTitle>{title}</DialogTitle>
-              <DialogDescription>{description}</DialogDescription>
-            </DialogHeader>
-          )}
-          {cloneElement(children, { onClose: () => setOpen(false) })}
-        </DialogContent>
-      </form>
+      <DialogContent
+        className={cn("sm:max-w-[30rem] p-0 border-none ", className)}
+      >
+        {title && description && (
+          <DialogHeader className="p-6">
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
+        )}
+        {cloneElement(children, {
+          onClose: () => setOpen(false),
+        })}
+      </DialogContent>
     </Dialog>
   );
 };

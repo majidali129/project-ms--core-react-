@@ -26,11 +26,18 @@ import { SignUpPage } from "./pages/sign-up";
 import { SignInPage } from "./pages/sign-in";
 import { AppLayout } from "./components/app-layout";
 import { ProjectDetailsPage } from "./pages/project-details-page";
+import { ProtectedRoutes } from "./components/protected-routes";
 
 const App = () => {
   return (
     <Routes>
-      <Route element={<AppLayout />}>
+      <Route
+        element={
+          <ProtectedRoutes>
+            <AppLayout />
+          </ProtectedRoutes>
+        }
+      >
         <Route index element={<Navigate replace to={dashboardPath()} />} />
         <Route path={dashboardPath()} element={<DashboardPage />} />
         <Route path={projectsPath()} element={<ProjectsPage />} />

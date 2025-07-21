@@ -17,7 +17,7 @@ export const getPriorityColors: Record<Priority, string> = {
   low: "bg-green-100 text-green-700",
 };
 
-export const getTaskStatusColors: Record<TaskStatus, string> = {
+export const taskStatusColors: Record<TaskStatus, string> = {
   todo: "bg-gray-100 text-gray-700",
   progress: "bg-blue-100 text-blue-700",
   review: "bg-teal-100 text-teal-700",

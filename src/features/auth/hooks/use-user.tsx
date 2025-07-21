@@ -7,5 +7,9 @@ export const useUser = () => {
     queryKey: ["user"],
   });
 
-  return { user, isAuthenticated: user?.role === "authenticated", loadingUser };
+  return {
+    user,
+    isAuthenticated: user?.role === "authenticated",
+    loadingUser,
+  };
 };

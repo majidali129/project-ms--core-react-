@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router";
-import { homePath, signInPath } from "@/paths";
+import { Link } from "react-router";
+import { homePath } from "@/paths";
 import { useState, type FormEvent } from "react";
 import { Loader } from "lucide-react";
 import {
@@ -13,12 +13,15 @@ import { ErrorField } from "@/components/form/error-field";
 import { FormItem } from "@/components/form/form-item";
 import { Button } from "@/components/ui/button";
 import { useSignUp } from "../hooks/use-sign-up";
+import type { Role } from "@/services/user-service";
+import { SortFilterSelect } from "@/components/sort-filter-select";
 
 export const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
+  const [role, setRole] = useState<Role>("user");
+  const [userName, setUserName] = useState("");
 
   const { signUp, signUpLoading } = useSignUp();
 
@@ -26,7 +29,7 @@ export const SignUpForm = () => {
     e.preventDefault();
     if (!email || !password) return;
     signUp(
-      { email, password },
+      { email, password, role, userName },
       {
         onSettled: () => {
           setEmail("");
@@ -47,7 +50,7 @@ export const SignUpForm = () => {
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <FormItem
               onChange={(e) => setEmail(e.target.value)}
               value={email}
@@ -55,6 +58,14 @@ export const SignUpForm = () => {
               label="Email"
               placeholder="Enter your email"
               type="email"
+            />
+            <FormItem
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              name="userName"
+              label="Username"
+              placeholder="Enter your username"
+              type="text"
             />
             <FormItem
               value={password}
@@ -77,6 +88,16 @@ export const SignUpForm = () => {
                 <ErrorField message="Passwords do not match." />
               )}
             </div>
+            <SortFilterSelect
+              className="w-full"
+              value={role}
+              onValueChange={(role) => setRole(role as Role)}
+              options={[
+                { label: "User", value: "user" },
+                { label: "Admin", value: "admin" },
+                { label: "Project-Manager", value: "project-manager" },
+              ]}
+            />
             <Button type="submit" className="w-full">
               {signUpLoading ? (
                 <>
@@ -90,12 +111,8 @@ export const SignUpForm = () => {
 
           <div className=" text-sm flex-center ">
             Already have an account?
-            <Button
-              onClick={() => navigate(signInPath())}
-              variant="link"
-              className="p-0 h-auto"
-            >
-              Sign in
+            <Button asChild variant="link" className="p-0 h-auto">
+              <Link to={"/auth/sign-in"}>Sign in</Link>
             </Button>
           </div>
         </CardContent>

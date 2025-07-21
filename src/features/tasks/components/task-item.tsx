@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, AlertCircle } from "lucide-react";
-import { getPriorityColors, getTaskStatusColors } from "@/utils/constants";
+import { getPriorityColors, taskStatusColors } from "@/utils/constants";
 import { format } from "date-fns";
 import type { Task } from "@/types";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             <Badge className={getPriorityColors[task.priority]}>
               {task.priority}
             </Badge>
-            <Badge className={getTaskStatusColors[task.status]}>
+            <Badge className={taskStatusColors[task.status]}>
               {task.status}
             </Badge>
           </div>
@@ -82,7 +82,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
                   isOverdue(task) ? "text-destructive font-medium" : ""
                 }
               >
-                {format(task.dueDate!, "d MM yyyy")}
+                {format(task.dueDate!, "dd MM yyyy")}
                 {isOverdue(task) && (
                   <AlertCircle className="h-[14px] w-[14px] inline ml-1" />
                 )}
@@ -90,13 +90,17 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {task.isPersonal && (
+            {task.isPersonal ? (
               <Badge variant="outline" className="text-[0.8rem]">
                 Personal
               </Badge>
+            ) : (
+              <Badge variant="default" className="text-[0.8rem]">
+                Assigned
+              </Badge>
             )}
             {task.tags.slice(0, 1).map((tag) => (
-              <Badge key={tag} variant="secondary">
+              <Badge key={tag} variant="outline">
                 {tag}
               </Badge>
             ))}

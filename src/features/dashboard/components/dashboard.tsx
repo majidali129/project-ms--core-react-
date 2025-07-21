@@ -10,90 +10,124 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Users, Check } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Link } from "react-router";
-import { projectsPath } from "@/paths";
-
-const projects = [
-  {
-    id: 1,
-    name: "Website Redesign",
-    description: "Modernizing the company website with new UI/UX",
-    progress: 75,
-    status: "In Progress",
-    dueDate: "Dec 15, 2024",
-    team: ["Alice", "Bob", "Carol"],
-    priority: "High",
-    tasksCompleted: 15,
-    totalTasks: 20,
-  },
-  {
-    id: 2,
-    name: "Mobile App Development",
-    description: "Building iOS and Android mobile applications",
-    progress: 45,
-    status: "In Progress",
-    dueDate: "Jan 30, 2025",
-    team: ["David", "Eve", "Frank", "Grace"],
-    priority: "Medium",
-    tasksCompleted: 9,
-    totalTasks: 20,
-  },
-  {
-    id: 3,
-    name: "API Integration",
-    description: "Connecting third-party services and APIs",
-    progress: 90,
-    status: "Review",
-    dueDate: "Nov 25, 2024",
-    team: ["Henry", "Ivy"],
-    priority: "High",
-    tasksCompleted: 18,
-    totalTasks: 20,
-  },
-  {
-    id: 4,
-    name: "Marketing Campaign",
-    description: "Q1 digital marketing strategy and execution",
-    progress: 25,
-    status: "Planning",
-    dueDate: "Mar 15, 2025",
-    team: ["Jack", "Kate", "Liam"],
-    priority: "Low",
-    tasksCompleted: 5,
-    totalTasks: 20,
-  },
-];
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "In Progress":
-      return "bg-status-progress text-status-progress-foreground";
-    case "Review":
-      return "bg-status-review text-status-review-foreground";
-    case "Planning":
-      return "bg-status-todo text-status-todo-foreground";
-    case "Completed":
-      return "bg-status-done text-status-done-foreground";
-    default:
-      return "bg-muted text-muted-foreground";
-  }
-};
-
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case "High":
-      return "bg-destructive text-destructive-foreground";
-    case "Medium":
-      return "bg-warning text-warning-foreground";
-    case "Low":
-      return "bg-muted text-muted-foreground";
-    default:
-      return "bg-muted text-muted-foreground";
-  }
-};
+import { projectDetailsPath, projectsPath } from "@/paths";
+import { useAppSelector } from "@/store/hooks";
+import { useUser } from "@/features/auth/hooks/use-user";
+import type { Role } from "@/services/user-service";
+import { projectStatusColor } from "@/utils/constants";
+import type { Project } from "@/types";
+import { format } from "date-fns";
 
 export const Dashboard = () => {
+  const projects = useAppSelector((state) => state.projects.projects);
+  const tasks = useAppSelector((state) => state.tasks.tasks);
+  const { user } = useUser();
+  const currentUsername = user?.user_metadata.userName;
+  const role = user?.user_metadata.role as Role;
+
+  const activeProjects = projects.filter((project) => {
+    if (role === "admin") return project.status === "active";
+
+    if (role === "project-manager") {
+      return (
+        project.status === "active" && project.createdBy === currentUsername
+      );
+    }
+
+    // Normal user
+    return (
+      project.status === "active" &&
+      project.team?.members.some(
+        (member) => member.userName === currentUsername
+      )
+    );
+  });
+
+  const completedTasks = tasks.filter((task) => {
+    if (role === "admin") return task.status === "done";
+
+    if (role === "project-manager") {
+      return (
+        task.status === "done" &&
+        (task.createdBy === currentUsername || task.isPersonal)
+      );
+    }
+
+    // Normal user
+    return (
+      task.status === "done" &&
+      (task.isPersonal ||
+        task.createdBy === currentUsername ||
+        task.assignee === currentUsername)
+    );
+  });
+
+  const getTeamMembers = () => {
+    const teamMemberSet = new Set<string>();
+
+    projects.forEach((project) => {
+      const isOwnedByPM =
+        role === "project-manager" && project.createdBy === currentUsername;
+      const isUserTeamMember =
+        role === "user" &&
+        project.team?.members.some((m) => m?.userName === currentUsername);
+
+      if (role === "admin" || isOwnedByPM || isUserTeamMember) {
+        project.team?.members.forEach((member) => {
+          if (member?.userName !== currentUsername) {
+            teamMemberSet.add(member?.userName);
+          }
+        });
+      }
+    });
+    return Array.from(teamMemberSet);
+  };
+
+  const teamMembers = getTeamMembers();
+
+  const getComingDeadlines = () => {
+    const now = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(now.getDate() + 7);
+
+    return tasks.filter((task) => {
+      const due = task.dueDate ? new Date(task.dueDate) : null;
+
+      if (!due || task.status === "done") return false;
+
+      const isInRange = due > now && due <= nextWeek;
+
+      if (role === "admin") return isInRange;
+
+      if (role === "project-manager") {
+        return (
+          isInRange && (task.isPersonal || task.createdBy === currentUsername)
+        );
+      }
+
+      // Normal user
+      return (
+        isInRange &&
+        (task.isPersonal ||
+          task.createdBy === currentUsername ||
+          task.assignee === currentUsername)
+      );
+    });
+  };
+
+  const filteredProjects = projects.filter((project) => {
+    if (role === "admin") return project.status === "active";
+    if (role === "project-manager")
+      return (
+        project.status === "active" && project.createdBy === currentUsername
+      );
+    return project.team.members.some(
+      (member) => member.userName === currentUsername
+    );
+  });
+
   return (
     <section className="space-y-10">
       <div className="flex items-center justify-between">
@@ -103,21 +137,28 @@ export const Dashboard = () => {
             Welcome back! Here's what's happening with your projects.
           </p>
         </div>
-        <Button>
-          <Folder className="h-4 w-4 mr-2" />
-          New Project
+        <Button asChild>
+          <Link to={`/${projectsPath()}`}>
+            <Folder className="h-4 w-4 mr-2" />
+            New Project
+          </Link>
         </Button>
       </div>
-      <DashboardStats />
+      <DashboardStats
+        activeProjects={activeProjects.length}
+        completedTasks={completedTasks.length}
+        teamMembers={teamMembers.length}
+        upcomingDeadlines={getComingDeadlines().length}
+      />
       <div className="space-y-5">
         <div className="flex-between">
-          <h3>Active Projects</h3>
+          <h3>Active Projects ({filteredProjects.length})</h3>
           <Button
             asChild
             variant="outline"
             className="h-auto group hover:not(.dark):!text-primary hover:not(.dark):!bg-primary/5 transition-all duration-200"
           >
-            <Link to={projectsPath()}>
+            <Link to={`/${projectsPath()}`}>
               View All Projects
               <span className="hidden group-hover:block transition-all duration-200">
                 <MoveRight />
@@ -129,63 +170,56 @@ export const Dashboard = () => {
         {/* Projects Grid */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {projects.map((project) => (
-            <Card key={project.id} className="b group cursor-pointer">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className=" group-hover:text-primary transition-colors">
-                      {project.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm line-clamp-2">
-                      {project.description}
-                    </CardDescription>
-                  </div>
-                  <Badge className={getPriorityColor(project.priority)}>
-                    {project.priority}
-                  </Badge>
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                {/* Progress */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium text-foreground">
-                      {project.progress}%
-                    </span>
-                  </div>
-                  <Progress value={project.progress} className="h-2" />
-                </div>
-
-                {/* Status and Due Date */}
-                <div className="flex items-center justify-between">
-                  <Badge className={getStatusColor(project.status)}>
-                    {project.status}
-                  </Badge>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {}
-                  </div>
-                </div>
-
-                {/* Tasks and Team */}
-                <div className="flex items-center justify-between pt-2 border-t border-border">
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 mr-1" />
-                    {project.tasksCompleted}/{project.totalTasks} tasks
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Users className="h-4 w-4 mr-1" />
-                    {project.team.length} members
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          {filteredProjects.map((project) => (
+            <ProjectItem key={project.id} project={project} />
           ))}
         </div>
       </div>
     </section>
   );
 };
+
+function ProjectItem({ project }: { project: Project }) {
+  return (
+    <Card key={project.id} className="b group ">
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <Link to={`/${projectDetailsPath(project.id as string)}`}>
+              <CardTitle className=" group-hover:text-primary transition-colors">
+                {project.name}
+              </CardTitle>
+            </Link>
+            <CardDescription className="text-sm line-clamp-2">
+              {project.description}
+            </CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Progress */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Progress</span>
+            <span className="font-medium text-foreground">
+              {project.progress}%
+            </span>
+          </div>
+          <Progress value={project.progress} className="h-2" />
+        </div>
+
+        {/* Status and Due Date */}
+        <div className="flex items-center justify-between">
+          <Badge className={projectStatusColor[project.status]}>
+            {project.status}
+          </Badge>
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Calendar className="h-4 w-4 mr-1" />
+            {format(new Date(project.endDate), "dd MM yyyy")}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

@@ -2,38 +2,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Check, Clock, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const stats = [
-  {
-    title: "Active Projects",
-    value: "12",
-    icon: Folder,
-    change: "+2 from last month",
-    color: "text-primary",
-  },
-  {
-    title: "Tasks Completed",
-    value: "234",
-    icon: Check,
-    change: "+18% from last week",
-    color: "text-green-500",
-  },
-  {
-    title: "Team Members",
-    value: "24",
-    icon: Users,
-    change: "+3 new members",
-    color: "text-orange-500",
-  },
-  {
-    title: "Upcoming Deadlines",
-    value: "8",
-    icon: Clock,
-    change: "Due this week",
-    color: "text-destructive",
-  },
-];
-
-export const DashboardStats = () => {
+type DashboardStatsProps = {
+  activeProjects: number;
+  completedTasks: number;
+  teamMembers: number;
+  upcomingDeadlines: number;
+};
+export const DashboardStats = ({
+  activeProjects,
+  completedTasks,
+  teamMembers,
+  upcomingDeadlines,
+}: DashboardStatsProps) => {
+  const stats = [
+    {
+      title: "Active Projects",
+      value: activeProjects,
+      icon: Folder,
+      change: "+2 from last month",
+      color: "text-primary",
+    },
+    {
+      title: "Tasks Completed",
+      value: completedTasks,
+      icon: Check,
+      change: "+18% from last week",
+      color: "text-green-500",
+    },
+    {
+      title: "Team Members",
+      value: teamMembers,
+      icon: Users,
+      change: "Accross all projects",
+      color: "text-orange-500",
+    },
+    {
+      title: "Upcoming Deadlines",
+      value: upcomingDeadlines,
+      icon: Clock,
+      change: "Due this week",
+      color: "text-destructive",
+    },
+  ];
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
       {stats.map((stat) => {

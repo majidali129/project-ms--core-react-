@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { teams } from "@/data/teams";
 import { useAppDispatch } from "@/store/hooks";
 import type { Project } from "@/types";
-import { format } from "date-fns";
 import { Plus, Target, X } from "lucide-react";
 import {
   useId,
@@ -22,6 +20,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { addProject } from "../project-slice";
+import { useUser } from "@/features/auth/hooks/use-user";
 
 const initialState: Pick<
   Project,
@@ -39,10 +38,13 @@ const initialState: Pick<
   description: "",
   budget: 0,
   spent: 0,
-  createdBy: teams[0].members[0].userName,
+  createdBy: "",
   startDate: new Date().toISOString(),
   endDate: new Date().toISOString(),
-  team: null,
+  team: {
+    name: "",
+    members: [],
+  },
   tags: [],
 };
 
@@ -57,6 +59,7 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   const [loading, setLoading] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const { user } = useUser();
 
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -89,11 +92,6 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   };
 
   const handleSubmit = (e: FormEvent) => {
-    // if ((e.nativeEvent as unknown).submitter?.id === "tags") {
-    //   e.preventDefault();
-    //   return;
-    // }
-
     setLoading(true);
     e.preventDefault();
     const newProject: Project = {
@@ -102,17 +100,17 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
       tags: selectedTags,
       status: "planning",
       progress: 0,
-      team: null,
+      createdBy: user?.user_metadata.userName,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
     dispatch(addProject(newProject));
 
-    setTimeout(() => {
-      onClose?.();
-    }, 1500);
+    onClose?.();
   };
+
+  console.log(formData);
   return (
     <Card className="w-full shadow-none border-none py-6 ">
       <CardHeader>
@@ -125,7 +123,7 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 ">
           <FormItem
             name="name"
             label="Project Name"
@@ -140,6 +138,21 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
             value={formData.description}
             onChange={handleOnChange}
             placeholder="Describe the project objectives, scope, and key deliverables..."
+          />
+          <FormItem
+            name="team"
+            label="Allocate Team (Later you can add members to this)"
+            value={formData.team.name}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                team: {
+                  ...prev.team,
+                  name: e.target.value,
+                },
+              }))
+            }
+            placeholder="Assign the best team..."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -169,21 +182,21 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <DatePicker
               label="Start Date"
-              defaultValue={format(formData.startDate, "d MM yyyy")}
+              defaultValue={formData.startDate!}
               onDateChange={(date) =>
                 setFormData((prev) => ({
                   ...prev,
-                  startDate: date.toISOString(),
+                  startDate: date.toISOString()!,
                 }))
               }
             />
             <DatePicker
-              defaultValue={format(formData.endDate, "d MM yyyy")}
+              defaultValue={formData.endDate!}
               label="End Date"
               onDateChange={(date) =>
                 setFormData((prev) => ({
                   ...prev,
-                  endDate: date.toISOString(),
+                  endDate: date.toISOString()!,
                 }))
               }
             />

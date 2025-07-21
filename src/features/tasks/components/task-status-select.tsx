@@ -21,6 +21,7 @@ export const TaskStatusSelect = () => {
 
   return (
     <SortFilterSelect
+      className="w-full"
       options={statusOptions}
       value={status}
       onValueChange={onStatusChange}

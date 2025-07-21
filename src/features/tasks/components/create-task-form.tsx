@@ -23,6 +23,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { addTask } from "../task-slice";
+import { useUser } from "@/features/auth/hooks/use-user";
 
 const initialState: Omit<Task, "id" | "createdAt" | "updatedAt" | "status"> = {
   title: "",
@@ -49,6 +50,7 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
   const [newTag, setNewTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const dispatch = useAppDispatch();
+  const { user } = useUser();
 
   const handleOnChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -87,7 +89,7 @@ export const CreateTaskForm = ({ onClose }: CreateTaskFormProps) => {
       ...formData,
       status: "todo",
       tags: selectedTags,
-      createdBy: "pm-01", // this'll be current user
+      createdBy: user?.user_metadata.userName, // this'll be current user
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
