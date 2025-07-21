@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TabsContent } from "@/components/ui/tabs";
-import { Clock, Target, Trophy } from "lucide-react";
 
 const recentProjects = [
   {
@@ -38,30 +37,6 @@ const skills = [
   { name: "User Research", level: 80, category: "Research" },
   { name: "Design Systems", level: 88, category: "Design" },
   { name: "React", level: 75, category: "Development" },
-];
-
-const achievements = [
-  {
-    title: "Project Champion",
-    description: "Led 5+ successful projects",
-    icon: Trophy,
-    earned: true,
-    date: "2024-01-15",
-  },
-  {
-    title: "Team Player",
-    description: "Collaborated on 10+ projects",
-    icon: Target,
-    earned: true,
-    date: "2023-12-20",
-  },
-  {
-    title: "Speed Demon",
-    description: "Complete tasks 20% faster than average",
-    icon: Clock,
-    earned: false,
-    date: null,
-  },
 ];
 
 export const ProfileOverview = () => {
@@ -135,54 +110,6 @@ export const ProfileOverview = () => {
                 <Progress value={skill.level} className="h-2" />
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Achievements */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Achievements</CardTitle>
-          <CardDescription>Your accomplishments and milestones</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            {achievements.map((achievement, index) => {
-              const Icon = achievement.icon;
-              return (
-                <div
-                  key={index}
-                  className={`p-4 rounded-lg border ${
-                    achievement.earned
-                      ? "bg-success/5 border-success/20"
-                      : "bg-muted/20 border-muted/20 opacity-60"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`p-2 rounded-lg ${
-                        achievement.earned
-                          ? "bg-success/10 text-success"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium">{achievement.title}</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        {achievement.description}
-                      </div>
-                      {achievement.earned && achievement.date && (
-                        <div className="text-xs text-muted-foreground mt-2">
-                          Earned {achievement.date}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </CardContent>
       </Card>

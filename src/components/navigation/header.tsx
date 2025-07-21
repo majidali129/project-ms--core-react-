@@ -21,8 +21,6 @@ export const Header = () => {
           <PanelLeftClose className=" w-6 h-6 stroke-1 " />
         )}
       </Button>
-
-      <div>Profile</div>
     </nav>
   );
 };

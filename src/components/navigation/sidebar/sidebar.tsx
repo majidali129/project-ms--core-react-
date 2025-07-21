@@ -5,18 +5,14 @@ import {
   Users,
   Check,
   Clock,
-  User,
-  Settings,
   Target,
   LogOut,
 } from "lucide-react";
 import {
   dashboardPath,
   homePath,
-  profilePath,
   projectsPath,
   reportsPath,
-  settingsPath,
   tasksPath,
   teamsPath,
 } from "@/paths";
@@ -31,10 +27,10 @@ const navLinks = [
   { label: "Dashboard", href: dashboardPath(), icon: <Folder /> },
   { label: "Projects", href: projectsPath(), icon: <FileText /> },
   { label: "Tasks", href: tasksPath(), icon: <Check /> },
-  { label: "Teams", href: teamsPath(), icon: <Users /> },
   { label: "Reports", href: reportsPath(), icon: <Clock /> },
-  { label: "Profile", href: profilePath(), icon: <User /> },
-  { label: "Settings", href: settingsPath(), icon: <Settings /> },
+  { label: "Teams", href: teamsPath(), icon: <Users /> },
+  // { label: "Profile", href: profilePath(), icon: <User /> },
+  // { label: "Settings", href: settingsPath(), icon: <Settings /> },
 ];
 
 export const Sidebar = () => {
