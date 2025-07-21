@@ -28,8 +28,9 @@ export const Projects = () => {
       : role === "project-manager"
       ? "Plan, manage, and track your assigned projects"
       : "View and work on projects you are part of";
+
   return (
-    <section className="space-y-8">
+    <section className="space-y-10 md:space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

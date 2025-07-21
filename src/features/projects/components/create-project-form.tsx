@@ -110,7 +110,6 @@ export const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
     onClose?.();
   };
 
-  console.log(formData);
   return (
     <Card className="w-full shadow-none border-none py-6 ">
       <CardHeader>

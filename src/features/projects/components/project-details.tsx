@@ -197,7 +197,7 @@ const ProjectDetails = () => {
     ) : null;
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-10 md:space-y-8">
       {/* Header */}
       <div className="flex-between">
         <div className="space-y-2">
@@ -235,7 +235,9 @@ const ProjectDetails = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {Math.round((project.spent / project.budget) * 100)}%
+              {project.spent
+                ? `${Math.round((project.spent / project.budget) * 100)}%`
+                : "0%"}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {formatCurrency(project.spent)} / {formatCurrency(project.budget)}
@@ -293,7 +295,7 @@ const ProjectDetails = () => {
 
       {/* Project Details */}
       <div className="grid lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-7 md:space-y-5">
           {/* Description */}
           <Card className="gap-3 ">
             <CardHeader>

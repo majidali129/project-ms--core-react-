@@ -1,13 +1,19 @@
 import { Outlet } from "react-router";
 import { Sidebar } from "./navigation/sidebar/sidebar";
+import { Header } from "./navigation/header";
 
 export const AppLayout = () => {
   return (
-    <section className="min-h-screen flex w-full ">
+    <section className="min-h-screen max-h-screen flex w-full overflow-y-hidden">
       <Sidebar />
-      <main className=" w-full flex-1 p-4 *:py-5 bg-background">
-        <Outlet />
-      </main>
+      <section
+        className={`grow flex flex-col bg-background overflow-y-auto transition-all duration-300 ease-in-out `}
+      >
+        <Header />
+        <main className="p-4 *:py-5 ">
+          <Outlet />
+        </main>
+      </section>
     </section>
   );
 };

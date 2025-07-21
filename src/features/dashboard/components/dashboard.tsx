@@ -129,7 +129,7 @@ export const Dashboard = () => {
   });
 
   return (
-    <section className="space-y-10">
+    <section className="space-y-10 md:space-y-8 ">
       <div className="flex items-center justify-between">
         <div>
           <h2>Dashboard</h2>
@@ -150,7 +150,7 @@ export const Dashboard = () => {
         teamMembers={teamMembers.length}
         upcomingDeadlines={getComingDeadlines().length}
       />
-      <div className="space-y-5">
+      <div className="space-y-7 md:space-y-5">
         <div className="flex-between">
           <h3>Active Projects ({filteredProjects.length})</h3>
           <Button

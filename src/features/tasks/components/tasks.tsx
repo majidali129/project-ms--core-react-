@@ -7,7 +7,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 
 export const Tasks = () => {
   return (
-    <section className="space-y-8">
+    <section className="space-y-10 md:space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between ">
         <div>
