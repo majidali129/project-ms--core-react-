@@ -1,1 +1,3 @@
-export const ReportsPage = () => <h1>Reports page</h1>;
+import { Reports } from "@/features/reports/components/reports";
+
+export const ReportsPage = () => <Reports />;

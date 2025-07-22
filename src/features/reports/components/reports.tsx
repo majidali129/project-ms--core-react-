@@ -10,21 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -33,289 +18,160 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Calendar,
-  CheckCircle2,
-  DollarSign,
-  Filter,
-  FolderOpen,
-  MoreHorizontal,
-  Pause,
-  Play,
-  Plus,
-  Search,
-  Users,
-  Clock,
-  Target,
   TrendingUp,
+  Clock,
+  DollarSign,
+  Users,
+  Target,
+  FolderOpen,
+  Download,
+  Filter,
+  RefreshCw,
 } from "lucide-react";
 
-type ProjectStatus =
-  | "planning"
-  | "active"
-  | "on-hold"
-  | "completed"
-  | "cancelled";
-type ProjectPriority = "high" | "medium" | "low" | "critical";
+// Mock data for reports
+const mockProjectStats = {
+  total: 12,
+  active: 5,
+  completed: 4,
+  onHold: 2,
+  cancelled: 1,
+  totalBudget: 850000,
+  totalSpent: 520000,
+  averageProgress: 68,
+};
 
-interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  avatar?: string;
-}
+const mockTaskStats = {
+  total: 156,
+  todo: 45,
+  inProgress: 38,
+  inReview: 23,
+  completed: 42,
+  overdue: 8,
+  completionRate: 73,
+  averageTimeToComplete: 4.2, // days
+};
 
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  status: ProjectStatus;
-  priority: ProjectPriority;
-  progress: number;
-  budget: number;
-  spent: number;
-  startDate: string;
-  endDate: string;
-  teamMembers: TeamMember[];
-  tasksTotal: number;
-  tasksCompleted: number;
-  client: string;
-  tags: string[];
-}
+const mockTeamStats = {
+  totalTeams: 8,
+  totalMembers: 34,
+  activeMembers: 31,
+  averageTeamSize: 4.25,
+  mostProductiveTeam: "Frontend Development Team",
+  domains: [
+    { name: "Frontend", teams: 2, members: 8 },
+    { name: "Backend", teams: 2, members: 6 },
+    { name: "Design", teams: 1, members: 5 },
+    { name: "DevOps", teams: 1, members: 4 },
+    { name: "QA", teams: 2, members: 11 },
+  ],
+};
 
-const mockProjects: Project[] = [
+const mockProjectProgress = [
   {
-    id: "1",
-    name: "E-commerce Platform Redesign",
-    description:
-      "Complete overhaul of the existing e-commerce platform with modern UI/UX, improved performance, and mobile-first approach.",
+    name: "E-commerce Platform",
+    progress: 85,
     status: "active",
-    priority: "high",
-    progress: 65,
     budget: 150000,
-    spent: 97500,
-    startDate: "2024-01-01",
-    endDate: "2024-04-30",
-    teamMembers: [
-      {
-        id: "1",
-        name: "Sarah Johnson",
-        role: "Project Manager",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-      {
-        id: "2",
-        name: "Mike Chen",
-        role: "Lead Developer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-      {
-        id: "3",
-        name: "Emma Davis",
-        role: "UI/UX Designer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-    ],
-    tasksTotal: 45,
-    tasksCompleted: 29,
-    client: "TechCorp Inc.",
-    tags: ["web", "ecommerce", "redesign"],
+    spent: 127500,
   },
   {
-    id: "2",
     name: "Mobile Banking App",
-    description:
-      "Development of a secure mobile banking application with biometric authentication and real-time transaction monitoring.",
-    status: "planning",
-    priority: "critical",
-    progress: 15,
+    progress: 45,
+    status: "active",
     budget: 200000,
-    spent: 30000,
-    startDate: "2024-02-01",
-    endDate: "2024-08-31",
-    teamMembers: [
-      {
-        id: "4",
-        name: "Alex Rivera",
-        role: "Tech Lead",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-      {
-        id: "5",
-        name: "Lisa Wang",
-        role: "Security Expert",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-    ],
-    tasksTotal: 60,
-    tasksCompleted: 9,
-    client: "SecureBank Ltd.",
-    tags: ["mobile", "banking", "security"],
+    spent: 90000,
   },
   {
-    id: "3",
-    name: "Data Analytics Dashboard",
-    description:
-      "Business intelligence dashboard for real-time data visualization and reporting with advanced analytics capabilities.",
-    status: "completed",
-    priority: "medium",
+    name: "Analytics Dashboard",
     progress: 100,
+    status: "completed",
     budget: 80000,
     spent: 75000,
-    startDate: "2023-10-01",
-    endDate: "2024-01-15",
-    teamMembers: [
-      {
-        id: "6",
-        name: "John Smith",
-        role: "Data Engineer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-      {
-        id: "7",
-        name: "Maria Garcia",
-        role: "Frontend Developer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-    ],
-    tasksTotal: 32,
-    tasksCompleted: 32,
-    client: "DataFlow Systems",
-    tags: ["analytics", "dashboard", "data"],
   },
   {
-    id: "4",
-    name: "Cloud Migration Project",
-    description:
-      "Migration of legacy systems to cloud infrastructure with improved scalability and cost optimization.",
+    name: "Cloud Migration",
+    progress: 30,
     status: "on-hold",
-    priority: "low",
-    progress: 40,
     budget: 120000,
-    spent: 48000,
-    startDate: "2023-12-01",
-    endDate: "2024-06-30",
-    teamMembers: [
-      {
-        id: "8",
-        name: "David Kim",
-        role: "DevOps Engineer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-      {
-        id: "9",
-        name: "Rachel Brown",
-        role: "Cloud Architect",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-    ],
-    tasksTotal: 28,
-    tasksCompleted: 11,
-    client: "Legacy Corp",
-    tags: ["cloud", "migration", "infrastructure"],
+    spent: 36000,
   },
   {
-    id: "5",
-    name: "AI Chatbot Integration",
-    description:
-      "Implementation of AI-powered chatbot for customer support with natural language processing and machine learning.",
+    name: "AI Chatbot",
+    progress: 15,
     status: "cancelled",
-    priority: "medium",
-    progress: 25,
     budget: 90000,
-    spent: 22500,
-    startDate: "2023-11-01",
-    endDate: "2024-03-31",
-    teamMembers: [
-      {
-        id: "10",
-        name: "Tom Wilson",
-        role: "AI Engineer",
-        avatar: "/placeholder.svg?height=32&width=32",
-      },
-    ],
-    tasksTotal: 35,
-    tasksCompleted: 8,
-    client: "SupportTech Inc.",
-    tags: ["ai", "chatbot", "ml"],
+    spent: 13500,
+  },
+];
+
+const mockTasksByPriority = [
+  { priority: "urgent", count: 12, color: "bg-red-500" },
+  { priority: "high", count: 28, color: "bg-orange-500" },
+  { priority: "medium", count: 67, color: "bg-blue-500" },
+  { priority: "low", count: 49, color: "bg-gray-500" },
+];
+
+const mockTeamPerformance = [
+  {
+    team: "Frontend Development",
+    tasksCompleted: 45,
+    efficiency: 92,
+    members: 4,
+  },
+  { team: "Backend API", tasksCompleted: 38, efficiency: 88, members: 3 },
+  { team: "UI/UX Design", tasksCompleted: 32, efficiency: 85, members: 3 },
+  { team: "DevOps", tasksCompleted: 28, efficiency: 90, members: 2 },
+  { team: "Quality Assurance", tasksCompleted: 52, efficiency: 87, members: 5 },
+];
+
+const mockRecentActivity = [
+  {
+    type: "project",
+    action: "completed",
+    item: "Analytics Dashboard",
+    time: "2 hours ago",
+  },
+  {
+    type: "task",
+    action: "assigned",
+    item: "API Integration",
+    time: "4 hours ago",
+  },
+  {
+    type: "team",
+    action: "added",
+    item: "John Doe to Frontend Team",
+    time: "1 day ago",
+  },
+  {
+    type: "project",
+    action: "created",
+    item: "Customer Portal",
+    time: "2 days ago",
+  },
+  {
+    type: "task",
+    action: "overdue",
+    item: "Database Migration",
+    time: "3 days ago",
   },
 ];
 
 const statusColors = {
-  planning: "bg-purple-100 text-purple-800 border-purple-200",
-  active: "bg-blue-100 text-blue-800 border-blue-200",
-  "on-hold": "bg-yellow-100 text-yellow-800 border-yellow-200",
-  completed: "bg-green-100 text-green-800 border-green-200",
-  cancelled: "bg-red-100 text-red-800 border-red-200",
+  active: "bg-blue-100 text-blue-800",
+  completed: "bg-green-100 text-green-800",
+  "on-hold": "bg-yellow-100 text-yellow-800",
+  cancelled: "bg-red-100 text-red-800",
+  planning: "bg-purple-100 text-purple-800",
 };
 
-const priorityColors = {
-  low: "bg-gray-100 text-gray-700",
-  medium: "bg-blue-100 text-blue-700",
-  high: "bg-orange-100 text-orange-700",
-  critical: "bg-red-100 text-red-700",
-};
-
-const statusIcons = {
-  planning: Clock,
-  active: Play,
-  "on-hold": Pause,
-  completed: CheckCircle2,
-  cancelled: Target,
-};
-
-export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [priorityFilter, setPriorityFilter] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredProjects = projects.filter((project) => {
-    const matchesStatus =
-      statusFilter === "all" || project.status === statusFilter;
-    const matchesPriority =
-      priorityFilter === "all" || project.priority === priorityFilter;
-    const matchesSearch =
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.client.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesPriority && matchesSearch;
-  });
-
-  const updateProjectStatus = (projectId: string, newStatus: ProjectStatus) => {
-    setProjects(
-      projects.map((project) =>
-        project.id === projectId ? { ...project, status: newStatus } : project
-      )
-    );
-  };
-
-  const updateProjectPriority = (
-    projectId: string,
-    newPriority: ProjectPriority
-  ) => {
-    setProjects(
-      projects.map((project) =>
-        project.id === projectId
-          ? { ...project, priority: newPriority }
-          : project
-      )
-    );
-  };
-
-  const markAsCompleted = (projectId: string) => {
-    setProjects(
-      projects.map((project) =>
-        project.id === projectId
-          ? { ...project, status: "completed", progress: 100 }
-          : project
-      )
-    );
-  };
+export const Reports = () => {
+  const [dateRange, setDateRange] = useState("30");
+  const [activeTab, setActiveTab] = useState("overview");
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -325,538 +181,738 @@ export default function ProjectsPage() {
     }).format(amount);
   };
 
-  //   const getProgressColor = (progress: number) => {
-  //     if (progress >= 80) return "bg-green-500";
-  //     if (progress >= 60) return "bg-blue-500";
-  //     if (progress >= 40) return "bg-yellow-500";
-  //     return "bg-gray-400";
-  //   };
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case "project":
+        return <FolderOpen className="w-4 h-4" />;
+      case "task":
+        return <Target className="w-4 h-4" />;
+      case "team":
+        return <Users className="w-4 h-4" />;
+      default:
+        return <Clock className="w-4 h-4" />;
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Projects</h1>
+          <h1 className="text-3xl font-bold">Reports & Analytics</h1>
           <p className="text-muted-foreground">
-            Manage and track your project portfolio
+            Track performance and insights across your projects and teams
           </p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          New Project
-        </Button>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Projects
-            </CardTitle>
-            <FolderOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{projects.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Active Projects
-            </CardTitle>
-            <Play className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {projects.filter((p) => p.status === "active").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {projects.filter((p) => p.status === "completed").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(projects.reduce((sum, p) => sum + p.budget, 0))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Search projects..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+        <div className="flex gap-2">
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-[180px]">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">Last 7 days</SelectItem>
+              <SelectItem value="30">Last 30 days</SelectItem>
+              <SelectItem value="90">Last 3 months</SelectItem>
+              <SelectItem value="365">Last year</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+          <Button>
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="planning">Planning</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="on-hold">On Hold</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Filter by priority" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Priority</SelectItem>
-            <SelectItem value="critical">Critical</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
-      {/* Projects Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map((project) => {
-          const StatusIcon = statusIcons[project.status];
-          return (
-            <Card
-              key={project.id}
-              className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-              onClick={() => setSelectedProject(project)}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2 flex-1">
-                    <CardTitle className="text-lg leading-tight">
-                      {project.name}
-                    </CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        className={`text-xs ${
-                          statusColors[project.status]
-                        } flex items-center gap-1`}
-                      >
-                        <StatusIcon className="w-3 h-3" />
-                        {project.status.charAt(0).toUpperCase() +
-                          project.status.slice(1).replace("-", " ")}
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs ${
-                          priorityColors[project.priority]
-                        }`}
-                      >
-                        {project.priority.charAt(0).toUpperCase() +
-                          project.priority.slice(1)}
-                      </Badge>
-                    </div>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      asChild
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          markAsCompleted(project.id);
-                        }}
-                        disabled={project.status === "completed"}
-                      >
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        Mark as Completed
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateProjectStatus(project.id, "active");
-                        }}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Set to Active
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateProjectStatus(project.id, "on-hold");
-                        }}
-                      >
-                        <Pause className="w-4 h-4 mr-2" />
-                        Put on Hold
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="projects">Projects</TabsTrigger>
+          <TabsTrigger value="tasks">Tasks</TabsTrigger>
+          <TabsTrigger value="teams">Teams</TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6">
+          {/* Key Metrics */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Projects
+                </CardTitle>
+                <FolderOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent className="space-y-4">
-                <CardDescription className="line-clamp-2">
-                  {project.description}
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockProjectStats.total}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-green-600 flex items-center">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +2 from last month
+                  </span>
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Tasks
+                </CardTitle>
+                <Target className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{mockTaskStats.total}</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-green-600 flex items-center">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +15 from last week
+                  </span>
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Team Members
+                </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTeamStats.totalMembers}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-blue-600 flex items-center">
+                    <Users className="w-3 h-3 mr-1" />
+                    Across {mockTeamStats.totalTeams} teams
+                  </span>
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Budget Utilization
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {Math.round(
+                    (mockProjectStats.totalSpent /
+                      mockProjectStats.totalBudget) *
+                      100
+                  )}
+                  %
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {formatCurrency(mockProjectStats.totalSpent)} of{" "}
+                  {formatCurrency(mockProjectStats.totalBudget)}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Row */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Project Status Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Project Status Distribution</CardTitle>
+                <CardDescription>
+                  Current status of all projects
                 </CardDescription>
-
-                {/* Progress */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span className="font-medium">{project.progress}%</span>
-                  </div>
-                  <Progress value={project.progress} className="h-2" />
-                </div>
-
-                {/* Budget */}
-                <div className="flex justify-between items-center text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <DollarSign className="w-3 h-3" />
-                    <span>Budget</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">
-                      {formatCurrency(project.spent)} /{" "}
-                      {formatCurrency(project.budget)}
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm">Active</span>
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {Math.round((project.spent / project.budget) * 100)}% used
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tasks */}
-                <div className="flex justify-between items-center text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Target className="w-3 h-3" />
-                    <span>Tasks</span>
-                  </div>
-                  <span className="font-medium">
-                    {project.tasksCompleted} / {project.tasksTotal}
-                  </span>
-                </div>
-
-                {/* Team */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Users className="w-3 h-3" />
-                    <span>Team</span>
-                  </div>
-                  <div className="flex -space-x-2">
-                    {project.teamMembers.slice(0, 3).map((member) => (
-                      <Avatar
-                        key={member.id}
-                        className="w-6 h-6 border-2 border-background"
-                      >
-                        <AvatarImage
-                          src={member.avatar || "/placeholder.svg"}
-                          alt={member.name}
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {mockProjectStats.active}
+                      </span>
+                      <div className="w-20">
+                        <Progress
+                          value={
+                            (mockProjectStats.active / mockProjectStats.total) *
+                            100
+                          }
+                          className="h-2"
                         />
-                        <AvatarFallback className="text-xs">
-                          {member.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                    {project.teamMembers.length > 3 && (
-                      <div className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs font-medium">
-                        +{project.teamMembers.length - 3}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1">
-                  {project.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Client */}
-                <div className="text-sm text-muted-foreground">
-                  Client:{" "}
-                  <span className="font-medium text-foreground">
-                    {project.client}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm">Completed</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {mockProjectStats.completed}
+                      </span>
+                      <div className="w-20">
+                        <Progress
+                          value={
+                            (mockProjectStats.completed /
+                              mockProjectStats.total) *
+                            100
+                          }
+                          className="h-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <span className="text-sm">On Hold</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {mockProjectStats.onHold}
+                      </span>
+                      <div className="w-20">
+                        <Progress
+                          value={
+                            (mockProjectStats.onHold / mockProjectStats.total) *
+                            100
+                          }
+                          className="h-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <span className="text-sm">Cancelled</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {mockProjectStats.cancelled}
+                      </span>
+                      <div className="w-20">
+                        <Progress
+                          value={
+                            (mockProjectStats.cancelled /
+                              mockProjectStats.total) *
+                            100
+                          }
+                          className="h-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          );
-        })}
-      </div>
 
-      {/* Project Detail Modal */}
-      <Dialog
-        open={!!selectedProject}
-        onOpenChange={() => setSelectedProject(null)}
-      >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          {selectedProject && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl">
-                  {selectedProject.name}
-                </DialogTitle>
-                <DialogDescription>
-                  Project details and management options
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-6">
-                {/* Status and Priority */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <Select
-                      value={selectedProject.status}
-                      onValueChange={(value: ProjectStatus) => {
-                        updateProjectStatus(selectedProject.id, value);
-                        setSelectedProject({
-                          ...selectedProject,
-                          status: value,
-                        });
-                      }}
+            {/* Task Priority Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Task Priority Breakdown</CardTitle>
+                <CardDescription>
+                  Distribution of tasks by priority level
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockTasksByPriority.map((item) => (
+                    <div
+                      key={item.priority}
+                      className="flex items-center justify-between"
                     >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="planning">Planning</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="on-hold">On Hold</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Priority</Label>
-                    <Select
-                      value={selectedProject.priority}
-                      onValueChange={(value: ProjectPriority) => {
-                        updateProjectPriority(selectedProject.id, value);
-                        setSelectedProject({
-                          ...selectedProject,
-                          priority: value,
-                        });
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="critical">Critical</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="low">Low</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    value={selectedProject.description}
-                    readOnly
-                    className="min-h-[100px]"
-                  />
-                </div>
-
-                {/* Progress and Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">Progress</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold mb-2">
-                        {selectedProject.progress}%
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-3 h-3 ${item.color} rounded-full`}
+                        ></div>
+                        <span className="text-sm capitalize">
+                          {item.priority}
+                        </span>
                       </div>
-                      <Progress
-                        value={selectedProject.progress}
-                        className="h-2"
-                      />
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">Budget Usage</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold mb-1">
-                        {Math.round(
-                          (selectedProject.spent / selectedProject.budget) * 100
-                        )}
-                        %
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {formatCurrency(selectedProject.spent)} /{" "}
-                        {formatCurrency(selectedProject.budget)}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">Task Completion</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold mb-1">
-                        {Math.round(
-                          (selectedProject.tasksCompleted /
-                            selectedProject.tasksTotal) *
-                            100
-                        )}
-                        %
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {selectedProject.tasksCompleted} /{" "}
-                        {selectedProject.tasksTotal} tasks
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Timeline and Client */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Start Date</Label>
-                    <div className="flex items-center gap-2 p-2 border rounded">
-                      <Calendar className="w-4 h-4" />
-                      <span>
-                        {new Date(
-                          selectedProject.startDate
-                        ).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>End Date</Label>
-                    <div className="flex items-center gap-2 p-2 border rounded">
-                      <Calendar className="w-4 h-4" />
-                      <span>
-                        {new Date(selectedProject.endDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Client</Label>
-                    <div className="p-2 border rounded">
-                      <span className="font-medium">
-                        {selectedProject.client}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Team Members */}
-                <div className="space-y-3">
-                  <Label>Team Members</Label>
-                  <div className="grid gap-3">
-                    {selectedProject.teamMembers.map((member) => (
-                      <div
-                        key={member.id}
-                        className="flex items-center gap-3 p-3 border rounded-lg"
-                      >
-                        <Avatar>
-                          <AvatarImage
-                            src={member.avatar || "/placeholder.svg"}
-                            alt={member.name}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">
+                          {item.count}
+                        </span>
+                        <div className="w-20">
+                          <Progress
+                            value={(item.count / mockTaskStats.total) * 100}
+                            className="h-2"
                           />
-                          <AvatarFallback>
-                            {member.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{member.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {member.role}
-                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                {/* Tags */}
-                <div className="space-y-2">
-                  <Label>Tags</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Actions */}
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => {
-                      markAsCompleted(selectedProject.id);
-                      setSelectedProject({
-                        ...selectedProject,
-                        status: "completed",
-                        progress: 100,
-                      });
-                    }}
-                    disabled={selectedProject.status === "completed"}
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Latest updates across your projects and teams
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {mockRecentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50"
                   >
-                    <CheckCircle2 className="w-4 h-4 mr-2" />
-                    Mark as Completed
-                  </Button>
-                  <Button variant="outline">
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    View Analytics
-                  </Button>
-                  <Button variant="outline">Edit Project</Button>
-                  <Button variant="outline">Add Team Member</Button>
-                  <Button variant="outline">Export Report</Button>
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm">
+                        <span className="font-medium capitalize">
+                          {activity.type}
+                        </span>{" "}
+                        {activity.action}:{" "}
+                        <span className="font-medium">{activity.item}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Projects Tab */}
+        <TabsContent value="projects" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Project Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Project Progress Overview</CardTitle>
+                <CardDescription>
+                  Current progress of all active projects
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockProjectProgress.map((project, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {project.name}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className={
+                              statusColors[
+                                project.status as keyof typeof statusColors
+                              ]
+                            }
+                          >
+                            {project.status}
+                          </Badge>
+                        </div>
+                        <span className="text-sm font-medium">
+                          {project.progress}%
+                        </span>
+                      </div>
+                      <Progress value={project.progress} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Budget Analysis */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Budget Analysis</CardTitle>
+                <CardDescription>
+                  Budget utilization across projects
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockProjectProgress.map((project, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">
+                          {project.name}
+                        </span>
+                        <span className="text-sm">
+                          {formatCurrency(project.spent)} /{" "}
+                          {formatCurrency(project.budget)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Progress
+                          value={(project.spent / project.budget) * 100}
+                          className="h-2 flex-1"
+                        />
+                        <span className="text-xs text-muted-foreground">
+                          {Math.round((project.spent / project.budget) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Project Statistics */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Average Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockProjectStats.averageProgress}%
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Across all projects
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Budget Efficiency</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {Math.round(
+                    (mockProjectStats.totalSpent /
+                      mockProjectStats.totalBudget) *
+                      100
+                  )}
+                  %
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Budget utilization rate
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Completion Rate</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {Math.round(
+                    (mockProjectStats.completed / mockProjectStats.total) * 100
+                  )}
+                  %
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Projects completed successfully
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Tasks Tab */}
+        <TabsContent value="tasks" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Completion Rate</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTaskStats.completionRate}%
+                </div>
+                <Progress
+                  value={mockTaskStats.completionRate}
+                  className="mt-2 h-2"
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Overdue Tasks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-red-600">
+                  {mockTaskStats.overdue}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Require immediate attention
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">In Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">
+                  {mockTaskStats.inProgress}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Currently being worked on
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Avg. Completion Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTaskStats.averageTimeToComplete}
+                </div>
+                <p className="text-xs text-muted-foreground">Days per task</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Task Status Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Task Status Breakdown</CardTitle>
+              <CardDescription>
+                Current distribution of tasks by status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <div className="text-center p-4 border rounded-lg">
+                  <div className="text-2xl font-bold text-gray-600">
+                    {mockTaskStats.todo}
+                  </div>
+                  <p className="text-sm text-muted-foreground">To Do</p>
+                </div>
+                <div className="text-center p-4 border rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {mockTaskStats.inProgress}
+                  </div>
+                  <p className="text-sm text-muted-foreground">In Progress</p>
+                </div>
+                <div className="text-center p-4 border rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">
+                    {mockTaskStats.inReview}
+                  </div>
+                  <p className="text-sm text-muted-foreground">In Review</p>
+                </div>
+                <div className="text-center p-4 border rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {mockTaskStats.completed}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Completed</p>
+                </div>
+                <div className="text-center p-4 border rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">
+                    {mockTaskStats.overdue}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Overdue</p>
                 </div>
               </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+            </CardContent>
+          </Card>
+
+          {/* Priority Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Task Priority Distribution</CardTitle>
+              <CardDescription>
+                Tasks organized by priority levels
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {mockTasksByPriority.map((item) => (
+                  <div
+                    key={item.priority}
+                    className="text-center p-4 border rounded-lg"
+                  >
+                    <div
+                      className={`w-4 h-4 ${item.color} rounded-full mx-auto mb-2`}
+                    ></div>
+                    <div className="text-2xl font-bold">{item.count}</div>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {item.priority}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Teams Tab */}
+        <TabsContent value="teams" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Total Teams</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTeamStats.totalTeams}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Across all domains
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Active Members</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTeamStats.activeMembers}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Out of {mockTeamStats.totalMembers} total
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Avg. Team Size</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {mockTeamStats.averageTeamSize}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Members per team
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Top Performer</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm font-bold">
+                  {mockTeamStats.mostProductiveTeam}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Highest task completion
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Team Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Performance</CardTitle>
+              <CardDescription>
+                Task completion and efficiency metrics by team
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {mockTeamPerformance.map((team, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-4">
+                      <Avatar>
+                        <AvatarFallback>
+                          {team.team.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-medium">{team.team}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {team.members} members
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <div className="text-lg font-bold">
+                            {team.tasksCompleted}
+                          </div>
+                          <p className="text-xs text-muted-foreground">Tasks</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-lg font-bold">
+                            {team.efficiency}%
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Efficiency
+                          </p>
+                        </div>
+                      </div>
+                      <Progress value={team.efficiency} className="w-24 h-2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Domain Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Distribution by Domain</CardTitle>
+              <CardDescription>
+                Teams and members organized by expertise area
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {mockTeamStats.domains.map((domain, index) => (
+                  <div key={index} className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">{domain.name}</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Teams:</span>
+                        <span className="font-medium">{domain.teams}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Members:</span>
+                        <span className="font-medium">{domain.members}</span>
+                      </div>
+                      <Progress
+                        value={
+                          (domain.members / mockTeamStats.totalMembers) * 100
+                        }
+                        className="h-2"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-}
+};

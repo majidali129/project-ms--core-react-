@@ -29,7 +29,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
     <Card
       key={task.id}
       className={cn(
-        `hover:shadow-card transition-all duration-300 gap-0 py-6 *:px-4${
+        `hover:shadow-card transition-shadow duration-300 gap-0 py-6 *:px-4${
           isOverdue(task) ? "border-destructive/20" : ""
         } ${task.status === "done" ? "opacity-80" : ""}`
       )}

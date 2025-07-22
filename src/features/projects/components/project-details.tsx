@@ -581,7 +581,7 @@ const ProjectDetails = () => {
                             {filteredAvailableusers.map((user) => (
                               <div
                                 key={user.id}
-                                className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50"
+                                className="flex items-start space-x-3 p-3 border rounded hover:bg-gray-50 dark:hover:bg-zinc-800/20"
                               >
                                 <Checkbox
                                   id={user.id}
@@ -621,8 +621,8 @@ const ProjectDetails = () => {
                           </div>
                         </div>
                         {/* Selected Teams Summary */}
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <p className="text-sm font-medium text-blue-900">
+                        <div className="p-3 bg-gray-50 border border-input dark:bg-zinc-800/20 rounded">
+                          <p className="text-sm font-normal text-primary/80">
                             {selectedUsers.length} user(s) selected for
                             allocation
                           </p>

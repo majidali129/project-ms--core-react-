@@ -1,13 +1,5 @@
 import { SidebarItem } from "./sidebar-item";
-import {
-  FileText,
-  Folder,
-  Users,
-  Check,
-  Clock,
-  Target,
-  LogOut,
-} from "lucide-react";
+import { FileText, Folder, Check, Clock, Target, LogOut } from "lucide-react";
 import {
   dashboardPath,
   homePath,
@@ -52,7 +44,7 @@ export const Sidebar = () => {
         />
       )}
       <aside
-        className={`min-h-screen fixed md:relative max-h-screen transition-all duration-300 ease-in-out  z-50 max-md:z-30 px-2.5 md:px-4 bg-sidebar  flex flex-col justify-between w-48 md:w-44 ${
+        className={`min-h-screen fixed md:relative max-h-screen transition-transform duration-300 ease-in-out  z-50 max-md:z-30 px-2.5 md:px-4 bg-sidebar  flex flex-col justify-between w-48 md:w-44 ${
           isOpen ? "translate-x-0" : "max-md:-translate-x-full"
         }  `}
       >

@@ -7,7 +7,7 @@ export const AppLayout = () => {
     <section className="min-h-screen max-h-screen flex w-full overflow-y-hidden">
       <Sidebar />
       <section
-        className={`grow flex flex-col bg-background overflow-y-auto transition-all duration-300 ease-in-out `}
+        className={`grow flex flex-col bg-background overflow-y-auto transition-transform duration-300 ease-in-out `}
       >
         <Header />
         <main className="*:p-5 ">

@@ -25,7 +25,7 @@ export const ProjectItem = ({ project }: ProjectItemProps) => {
     <Link to={`${project.id}`}>
       <Card
         key={project.id}
-        className="hover:shadow-card transition-all duration-300 hover:-translate-y-1 gap-0 py-6 *:px-4"
+        className="hover:shadow-card transition-shadow duration-300 hover:-translate-y-1 gap-0 py-6 *:px-4"
       >
         {/* Same card content */}
         <CardHeader>
