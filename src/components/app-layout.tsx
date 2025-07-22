@@ -10,7 +10,7 @@ export const AppLayout = () => {
         className={`grow flex flex-col bg-background overflow-y-auto transition-all duration-300 ease-in-out `}
       >
         <Header />
-        <main className="p-4 *:py-5 ">
+        <main className="*:p-5 ">
           <Outlet />
         </main>
       </section>

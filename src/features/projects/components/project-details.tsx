@@ -46,6 +46,7 @@ import {
   X,
   UserPlus,
   ClipboardList,
+  SearchX,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -63,6 +64,7 @@ import { ProjectTasksList } from "./projec-tasks-list";
 import { useUser } from "@/features/auth/hooks/use-user";
 import { isPmOrAdmin } from "@/utils/is-pm-or-admin";
 import { isOwner as isOwnerApi } from "@/utils/is-owner";
+import { Placeholder } from "@/components/placeholder";
 
 const ProjectDetails = () => {
   const [openAddTeamMember, setOpenAddTeamMember] = useState(false);
@@ -160,9 +162,11 @@ const ProjectDetails = () => {
 
   if (!project)
     return (
-      <div className="text-4xl text-white text-center ">
-        Project no longer exist
-      </div>
+      <Placeholder
+        icon={<SearchX className="w-8 h-8" />}
+        title="Project not found."
+        description="The project you’re looking for doesn’t exist, may have been removed, or you don’t have permission to view it."
+      />
     );
 
   const StatusIcon = statusIcons[project.status];

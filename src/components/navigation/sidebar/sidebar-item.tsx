@@ -16,7 +16,9 @@ export const SidebarItem = ({ link, close }: SidebarItemProps) => {
       onClick={close}
       className={({ isActive }) =>
         `bg-transparent text-foreground  hover:bg-primary/10 py-1.5 text-[.87rem] px-2.5 rounded flex items-center  gap-1.5  not(.isActive):hover:text-zinc-800 ${
-          isActive ? "!bg-primary text-white " : "text-white/80"
+          isActive
+            ? "!bg-primary  text-white dark:text-foreground "
+            : "text-foreground/80 hover:text-foreground"
         } `
       }
       to={link.href}

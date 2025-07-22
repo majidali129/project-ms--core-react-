@@ -55,3 +55,55 @@ export const taskPriorityOptions = [
   { label: "Low", value: "low" },
   { label: "Urgent", value: "urgent" },
 ];
+
+export const emptyProjectMsg = {
+  admin: {
+    title: "You haven't created any projects yet.",
+    description:
+      "Start by creating your first project to organize work and collaborate with your team.",
+  },
+  ["project-manager"]: {
+    title: "You haven't created any projects yet.",
+    description:
+      "Start by creating your first project to organize work and collaborate with your team.",
+  },
+  user: {
+    title: "You're not part of any projects yet.",
+    description: "Once you're added to a team or project, it will appear here.",
+  },
+};
+
+export const emptyTaskMsg = {
+  admin: {
+    title: "No tasks found.",
+    description:
+      "Create tasks under your projects to manage and track progress effectively.",
+  },
+  ["project-manager"]: {
+    title: "No tasks found.",
+    description:
+      "Start by creating tasks to plan work and assign responsibilities to your team.",
+  },
+  user: {
+    title: "No tasks assigned to you yet.",
+    description:
+      "Once you're assigned to tasks in a project, they will appear here.",
+  },
+};
+export const emptyActiveProjectMsg = {
+  admin: {
+    title: "No active projects yet.",
+    description:
+      "Create a new project or activate an existing one to start tracking progress and assigning tasks.",
+  },
+  ["project-manager"]: {
+    title: "No active projects yet.",
+    description:
+      "Start managing work by creating or joining an active project.",
+  },
+  user: {
+    title: "You're not part of any active projects.",
+    description:
+      "Once you're added to an active project by your team, it will show up here.",
+  },
+};

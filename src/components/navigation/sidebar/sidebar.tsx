@@ -14,7 +14,6 @@ import {
   projectsPath,
   reportsPath,
   tasksPath,
-  teamsPath,
 } from "@/paths";
 import { Link } from "react-router";
 import { useSignOut } from "@/features/auth/hooks/use-sign-out";
@@ -28,7 +27,7 @@ const navLinks = [
   { label: "Projects", href: projectsPath(), icon: <FileText /> },
   { label: "Tasks", href: tasksPath(), icon: <Check /> },
   { label: "Reports", href: reportsPath(), icon: <Clock /> },
-  { label: "Teams", href: teamsPath(), icon: <Users /> },
+  // { label: "Teams", href: teamsPath(), icon: <Users /> },
   // { label: "Profile", href: profilePath(), icon: <User /> },
   // { label: "Settings", href: settingsPath(), icon: <Settings /> },
 ];

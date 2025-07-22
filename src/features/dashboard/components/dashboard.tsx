@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DashboardStats } from "./dashboard-stats";
-import { Folder, MoveRight } from "lucide-react";
+import { Folder, FolderOpen, MoveRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,9 +16,10 @@ import { projectDetailsPath, projectsPath } from "@/paths";
 import { useAppSelector } from "@/store/hooks";
 import { useUser } from "@/features/auth/hooks/use-user";
 import type { Role } from "@/services/user-service";
-import { projectStatusColor } from "@/utils/constants";
+import { emptyActiveProjectMsg, projectStatusColor } from "@/utils/constants";
 import type { Project } from "@/types";
 import { format } from "date-fns";
+import { Placeholder } from "@/components/placeholder";
 
 export const Dashboard = () => {
   const projects = useAppSelector((state) => state.projects.projects);
@@ -124,7 +125,7 @@ export const Dashboard = () => {
         project.status === "active" && project.createdBy === currentUsername
       );
     return project.team.members.some(
-      (member) => member.userName === currentUsername
+      (member) => member?.userName === currentUsername
     );
   });
 
@@ -168,12 +169,19 @@ export const Dashboard = () => {
         </div>
 
         {/* Projects Grid */}
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {filteredProjects.map((project) => (
-            <ProjectItem key={project.id} project={project} />
-          ))}
-        </div>
+        {filteredProjects.length > 0 ? (
+          <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {filteredProjects.map((project) => (
+              <ProjectItem key={project.id} project={project} />
+            ))}
+          </ul>
+        ) : (
+          <Placeholder
+            icon={<FolderOpen className="w-8 h-8" />}
+            title={emptyActiveProjectMsg[role].title}
+            description={emptyActiveProjectMsg[role].description}
+          />
+        )}
       </div>
     </section>
   );

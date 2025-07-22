@@ -1,11 +1,13 @@
 import { ProjectItem } from "./project-item";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { FolderOpen, Search } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { ProjectStatusSelect } from "./project-status-select";
 import { applySearch } from "../project-slice";
 import { useUser } from "@/features/auth/hooks/use-user";
 import type { Role } from "@/services/user-service";
+import { Placeholder } from "@/components/placeholder";
+import { emptyProjectMsg } from "@/utils/constants";
 
 export const ProjectsList = () => {
   const projects = useAppSelector((state) => state.projects.projects);
@@ -58,11 +60,19 @@ export const ProjectsList = () => {
           <ProjectStatusSelect />
         </div>
       </div>
-      <ul className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {filteredProjects.map((project) => (
-          <ProjectItem key={project.id} project={project} />
-        ))}
-      </ul>
+      {filteredProjects.length ? (
+        <ul className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {filteredProjects.map((project) => (
+            <ProjectItem key={project.id} project={project} />
+          ))}
+        </ul>
+      ) : (
+        <Placeholder
+          icon={<FolderOpen className="w-8 h-8" />}
+          title={emptyProjectMsg[role].title}
+          description={emptyProjectMsg[role].description}
+        />
+      )}
     </div>
   );
 };

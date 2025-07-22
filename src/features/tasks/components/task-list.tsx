@@ -1,5 +1,5 @@
 import { TaskItem } from "./task-item";
-import { Search } from "lucide-react";
+import { ClipboardList, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TaskStatusSelect } from "./task-status-select";
 import { TaskPrioritySelect } from "./task-priority-select";
@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { applySearch } from "../task-slice";
 import { useUser } from "@/features/auth/hooks/use-user";
 import type { Role } from "@/services/user-service";
+import { Placeholder } from "@/components/placeholder";
+import { emptyTaskMsg } from "@/utils/constants";
 
 export const TaskList = () => {
   const { user } = useUser();
@@ -87,11 +89,19 @@ export const TaskList = () => {
         </div>
       </div>
 
-      <ul className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {filteredTasks.map((task) => (
-          <TaskItem task={task} key={task.id} />
-        ))}
-      </ul>
+      {filteredTasks.length > 0 ? (
+        <ul className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {filteredTasks.map((task) => (
+            <TaskItem task={task} key={task.id} />
+          ))}
+        </ul>
+      ) : (
+        <Placeholder
+          icon={<ClipboardList className="w-8 h-8" />}
+          title={emptyTaskMsg[role].title}
+          description={emptyTaskMsg[role].description}
+        />
+      )}
     </div>
   );
 };
